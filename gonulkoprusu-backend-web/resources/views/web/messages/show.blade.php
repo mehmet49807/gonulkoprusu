@@ -29,6 +29,10 @@
         </a>
     </header>
 
+    @if(session('success'))
+        <p class="chat-flash-success" role="status">{{ session('success') }}</p>
+    @endif
+
     <div class="chat-messages" id="chat-messages">
         @forelse($messages as $message)
         <div class="chat-bubble {{ $message->sender_id === $viewer->id ? 'chat-bubble--sent' : 'chat-bubble--received' }}">

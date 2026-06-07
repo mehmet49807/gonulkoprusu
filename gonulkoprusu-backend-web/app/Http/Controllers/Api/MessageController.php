@@ -5,64 +5,26 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Message;
 use App\Models\User;
-use App\Services\GenderFilterService;
+use App\Services\MessageConversationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class MessageController extends Controller
 {
-    public function __construct(private GenderFilterService $genderFilter) {}
+    public function __construct(private MessageConversationService $conversations) {}
 
     public function conversations(Request $request): JsonResponse
     {
         $viewer = $request->user();
-        $viewerId = $viewer->id;
 
-        $latestIds = Message::query()
-            ->selectRaw('MAX(id) as latest_id')
-            ->where(function ($q) use ($viewerId) {
-                $q->where('sender_id', $viewerId)
-                    ->orWhere('receiver_id', $viewerId);
-            })
-            ->groupByRaw(
-                'CASE WHEN sender_id = ? THEN receiver_id ELSE sender_id END',
-                [$viewerId]
-            )
-            ->pluck('latest_id');
-
-        $conversations = Message::whereIn('id', $latestIds)
-            ->orderByDesc('created_at')
-            ->orderByDesc('id')
-            ->get()
-            ->map(function ($msg) use ($viewer, $viewerId) {
-                $otherId = $msg->sender_id === $viewerId ? $msg->receiver_id : $msg->sender_id;
-                $other = User::find($otherId);
-
-                if (!$other || $other->role !== 'user' || $other->gender === $viewer->gender) {
-                    return null;
-                }
-
-                $visible = User::where('id', $other->id)
-                    ->where(function ($q) use ($viewer) {
-                        $this->genderFilter->applyDiscoveryFilters($q, $viewer);
-                    })
-                    ->exists();
-
-                if (!$visible) {
-                    return null;
-                }
-
-                return [
-                    'user' => $other->toPublicArray(),
-                    'last_message' => $msg->message_text,
-                    'last_message_at' => $msg->created_at?->toIso8601String(),
-                    'unread_count' => Message::where('sender_id', $otherId)
-                        ->where('receiver_id', $viewerId)
-                        ->where('is_read', false)
-                        ->count(),
-                ];
-            })
-            ->filter()
+        $conversations = $this->conversations->buildConversations($viewer)
+            ->map(fn (array $item) => [
+                'user' => $item['user']->toPublicArray(),
+                'last_message' => $item['last_message'],
+                'last_message_at' => $item['last_message_at']?->toIso8601String(),
+                'message_count' => $item['message_count'],
+                'unread_count' => $item['unread_count'],
+            ])
             ->values();
 
         return response()->json(['success' => true, 'data' => ['conversations' => $conversations]]);
@@ -71,13 +33,13 @@ class MessageController extends Controller
     public function messages(Request $request, int $userId): JsonResponse
     {
         $viewer = $request->user();
-        $perPage = min((int) $request->get('per_page', 50), 100);
-
         $partner = User::findOrFail($userId);
 
-        if ($partner->gender === $viewer->gender) {
-            return response()->json(['success' => false, 'message' => 'Yalnızca karşı cinsle mesajlaşabilirsiniz.'], 403);
+        if (!$this->conversations->canOpenChat($viewer, $partner)) {
+            return response()->json(['success' => false, 'message' => 'Bu sohbete erişiminiz yok.'], 403);
         }
+
+        $perPage = min((int) $request->get('per_page', 50), 100);
 
         $messages = Message::query()
             ->where(function ($q) use ($viewer, $userId) {
@@ -90,6 +52,8 @@ class MessageController extends Controller
             ->orderBy('id')
             ->paginate($perPage);
 
+        $this->conversations->markAsRead($viewer, $partner);
+
         return response()->json(['success' => true, 'data' => $messages]);
     }
 
@@ -98,18 +62,13 @@ class MessageController extends Controller
         $request->validate(['message_text' => 'required|string|max:2000']);
 
         $sender = $request->user();
-
-        if (!$sender->canSendMessages()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Mesaj göndermek için premium üyelik veya aktif deneme süresi gereklidir.',
-            ], 403);
-        }
-
         $receiver = User::findOrFail($userId);
 
-        if ($receiver->gender === $sender->gender) {
-            return response()->json(['success' => false, 'message' => 'Yalnızca karşı cinsle mesajlaşabilirsiniz.'], 403);
+        if (!$this->conversations->canSendTo($sender, $receiver)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Mesaj göndermek için premium üyelik, aktif deneme süresi veya geçerli bir sohbet hakkı gereklidir.',
+            ], 403);
         }
 
         $message = Message::create([
