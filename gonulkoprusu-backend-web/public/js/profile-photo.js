@@ -4,7 +4,7 @@
     const JPEG_QUALITY = 0.88;
 
     function isImageFile(file) {
-        return file && (file.type.startsWith('image/') || /\.(jpe?g|png|gif|webp|heic|heif)$/i.test(file.name));
+        return file && (file.type.startsWith('image/') || /\.(jpe?g|png|gif|webp)$/i.test(file.name));
     }
 
     function readAsImage(file) {
@@ -34,7 +34,7 @@
             throw new Error('Lütfen JPEG, PNG, GIF veya WebP formatında bir fotoğraf seçin.');
         }
 
-        if (file.size <= MAX_BYTES && /^image\/jpe?g$/i.test(file.type)) {
+        if (file.size <= MAX_BYTES && file.type === 'image/jpeg') {
             return file;
         }
 
@@ -71,12 +71,11 @@
     }
 
     function showError(form, message) {
-        let el = form.parentElement?.querySelector('.profile-photo-error');
+        let el = form.closest('.profile-page')?.querySelector('.profile-photo-error');
         if (!el) {
             el = document.createElement('small');
             el.className = 'form-error profile-photo-error';
-            form.closest('.profile-photo-wrap')?.insertAdjacentElement('afterend', el)
-                || form.closest('.register-photo-block')?.insertAdjacentElement('afterend', el);
+            form.closest('.profile-photo-wrap')?.insertAdjacentElement('afterend', el);
         }
         el.textContent = message;
     }
@@ -89,54 +88,28 @@
     }
 
     function setLoading(form, loading) {
-        const btn = form.querySelector('.profile-photo-change, .register-photo-btn');
-        if (btn) {
-            btn.classList.toggle('profile-photo-change--loading', loading);
-            btn.setAttribute('aria-busy', loading ? 'true' : 'false');
+        const uploadBtn = form.querySelector('.profile-photo-upload');
+        const saveBtn = form.querySelector('.profile-photo-save');
+        if (uploadBtn) {
+            uploadBtn.disabled = loading;
+            uploadBtn.setAttribute('aria-busy', loading ? 'true' : 'false');
         }
+        if (saveBtn) saveBtn.disabled = loading || !form.querySelector('input[type="file"]')?.files?.length;
         const input = form.querySelector('input[type="file"]');
         if (input) input.disabled = loading;
     }
 
-    async function submitPhotoForm(form, prepared) {
-        const formData = new FormData();
-        formData.append('photo', prepared, prepared.name);
-
-        const token = form.querySelector('input[name="_token"]')?.value;
-        if (token) {
-            formData.append('_token', token);
-        }
-
-        const response = await fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            credentials: 'same-origin',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                Accept: 'application/json, text/html',
-            },
-        });
-
-        if (response.ok) {
-            window.location.reload();
-            return;
-        }
-
-        let message = 'Profil fotoğrafı yüklenemedi. Lütfen tekrar deneyin.';
-        try {
-            const data = await response.json();
-            if (data?.message) message = data.message;
-            if (data?.errors?.photo?.[0]) message = data.errors.photo[0];
-        } catch (e) {
-            // HTML yanıt — sayfayı yenileyerek sunucu hatalarını göster.
-            window.location.reload();
-            return;
-        }
-
-        throw new Error(message);
+    function setSaveEnabled(form, enabled) {
+        const saveBtn = form.querySelector('.profile-photo-save');
+        if (saveBtn) saveBtn.disabled = !enabled;
     }
 
-    async function handlePhotoInput(input, autoSubmit) {
+    function restoreProfilePreview(preview, originalHtml) {
+        if (!preview || originalHtml === undefined) return;
+        preview.innerHTML = originalHtml;
+    }
+
+    async function handlePhotoInput(input) {
         const form = input.form;
         const file = input.files?.[0];
         if (!form || !file) return;
@@ -144,42 +117,62 @@
         clearError(form);
 
         try {
-            if (autoSubmit) setLoading(form, true);
             const prepared = await preparePhotoFile(file);
             const preview = document.getElementById('profilePhotoPreview')
                 || document.getElementById('registerPhotoPreview');
             setPreview(preview, prepared);
 
-            if (autoSubmit) {
-                await submitPhotoForm(form, prepared);
-            } else {
-                const transfer = new DataTransfer();
-                transfer.items.add(prepared);
-                input.files = transfer.files;
-            }
+            const transfer = new DataTransfer();
+            transfer.items.add(prepared);
+            input.files = transfer.files;
+
+            setSaveEnabled(form, true);
         } catch (err) {
-            if (autoSubmit) setLoading(form, false);
             input.value = '';
+            setSaveEnabled(form, false);
             showError(form, err.message || 'Fotoğraf yüklenemedi.');
         }
     }
 
-    document.querySelectorAll('.profile-photo-form input[type="file"]').forEach(function (input) {
+    document.querySelectorAll('.profile-photo-form').forEach(function (form) {
+        const input = form.querySelector('input[type="file"]');
+        const uploadBtn = form.querySelector('.profile-photo-upload');
+        const preview = document.getElementById('profilePhotoPreview');
+        const originalPreviewHtml = preview ? preview.innerHTML : '';
+
+        if (!input) return;
+
         input.removeAttribute('required');
+
+        uploadBtn?.addEventListener('click', function () {
+            input.click();
+        });
+
         input.addEventListener('change', function () {
-            handlePhotoInput(input, true);
+            if (!input.files?.length) {
+                setSaveEnabled(form, false);
+                return;
+            }
+            handlePhotoInput(input);
+        });
+
+        form.addEventListener('submit', function () {
+            if (!input.files?.length) {
+                return;
+            }
+            setLoading(form, true);
         });
     });
 
     document.querySelectorAll('.register-photo-input').forEach(function (input) {
         input.addEventListener('change', function () {
-            handlePhotoInput(input, false);
+            handlePhotoInput(input);
         });
     });
 
     document.querySelectorAll('[data-profile-open-story]').forEach(function (btn) {
         btn.addEventListener('click', function (e) {
-            if (e.target.closest('.profile-photo-change')) return;
+            if (e.target.closest('.profile-photo-form')) return;
             const index = parseInt(btn.dataset.profileOpenStory, 10);
             const storyItem = document.querySelector('.story-item[data-story-index="' + index + '"]');
             if (storyItem) {

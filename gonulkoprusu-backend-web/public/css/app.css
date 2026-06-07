@@ -1891,29 +1891,25 @@ body.ig-story-open { overflow: hidden; }
 }
 
 .profile-photo-form {
-    margin: 0;
+    margin: 10px 0 0;
 }
 
-.profile-photo-change {
-    position: absolute;
-    right: -4px;
-    bottom: -4px;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: var(--rose-deep);
-    color: var(--cream-light);
-    border: 2px solid var(--cream-light);
+.profile-photo-actions {
     display: flex;
-    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
     justify-content: center;
-    cursor: pointer;
-    font-size: 0.9rem;
-    box-shadow: 0 2px 8px var(--shadow);
 }
 
-.profile-photo-change input {
-    display: none;
+.profile-photo-actions .btn-sm {
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    min-width: 72px;
+}
+
+.profile-photo-save:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .profile-photo-error {
@@ -3066,12 +3062,6 @@ body.ig-story-open { overflow: hidden; }
     text-overflow: ellipsis;
 }
 
-.conversation-meta {
-    margin-top: 2px;
-    font-size: 0.78rem;
-    color: var(--text-muted);
-}
-
 .conversation-item--unread .conversation-preview {
     font-weight: 600;
     color: var(--text-primary);
@@ -3169,15 +3159,6 @@ body.ig-story-open { overflow: hidden; }
 .chat-partner-location {
     display: block;
     font-size: 0.85rem;
-}
-
-.chat-flash-success {
-    margin: 0 0 12px;
-    padding: 10px 14px;
-    border-radius: 10px;
-    background: #e8f5f0;
-    color: #1f5c4a;
-    font-size: 0.9rem;
 }
 
 .chat-messages {

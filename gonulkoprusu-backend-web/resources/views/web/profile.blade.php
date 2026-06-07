@@ -41,12 +41,24 @@
                 @endif
             </div>
             @endif
-            <form method="POST" action="{{ route('profile.photo') }}" enctype="multipart/form-data" class="profile-photo-form">
+            <form method="POST" action="{{ route('profile.photo') }}" enctype="multipart/form-data" class="profile-photo-form" id="profilePhotoForm">
                 @csrf
-                <label class="profile-photo-change" title="Profil fotoğrafı değiştir">
-                    <input type="file" name="photo" accept="image/jpeg,image/png,image/gif,image/webp">
-                    <span>📷</span>
-                </label>
+                <input
+                    type="file"
+                    id="profilePhotoInput"
+                    name="photo"
+                    class="profile-photo-input"
+                    accept="image/jpeg,image/png,image/gif,image/webp"
+                    hidden
+                >
+                <div class="profile-photo-actions" id="profilePhotoActions">
+                    <button type="button" class="btn btn-outline btn-sm profile-photo-upload" id="profilePhotoUpload">
+                        Yükle
+                    </button>
+                    <button type="submit" class="btn btn-primary btn-sm profile-photo-save" id="profilePhotoSave" disabled>
+                        Kaydet
+                    </button>
+                </div>
             </form>
         </div>
         <div class="profile-header-meta">
@@ -164,7 +176,7 @@
 @endif
 
 <script src="{{ asset('js/feed.js') }}?v=ig-feed-2"></script>
-<script src="{{ asset('js/profile-photo.js') }}?v=profile-photo-2"></script>
+<script src="{{ asset('js/profile-photo.js') }}?v=profile-photo-3"></script>
 @if($ownStoryGroup)
 <script src="{{ asset('js/stories.js') }}?v=ig-stories-3"></script>
 @endif
