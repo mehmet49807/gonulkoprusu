@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Gönül Köprüsü için dayanışmayı, gönüllülüğü ve topluluk desteğini öne çıkaran modern web sitesi tasarımı."
+    >
+    <title>Gönül Köprüsü | İyiliği Birlikte Büyütelim</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="site-header" data-header>
+      <a class="brand" href="#anasayfa" aria-label="Gönül Köprüsü ana sayfa">
+        <span class="brand-mark" aria-hidden="true">GK</span>
+        <span>Gönül Köprüsü</span>
+      </a>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+        <span class="sr-only">Menüyü aç veya kapat</span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav class="site-nav" id="site-nav" aria-label="Ana menü">
+        <a href="#hakkimizda">Hakkımızda</a>
+        <a href="#programlar">Programlar</a>
+        <a href="#etki">Etki</a>
+        <a href="#iletisim">İletişim</a>
+      </nav>
+
+      <a class="header-cta" href="#katil">Gönüllü Ol</a>
+    </header>
+
+    <main>
+      <section class="hero" id="anasayfa">
+        <div class="hero-content">
+          <p class="eyebrow">Topluluk destek platformu</p>
+          <h1>İyilikle kurulan köprüler, hayatları birbirine yaklaştırır.</h1>
+          <p class="hero-copy">
+            Gönül Köprüsü; gönüllüleri, bağışçıları ve desteğe ihtiyaç duyan aileleri
+            şeffaf, güvenilir ve sıcak bir dayanışma ağı içinde buluşturur.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#katil">Destek Ver</a>
+            <a class="button secondary" href="#programlar">Programları Gör</a>
+          </div>
+          <dl class="hero-stats" aria-label="Gönül Köprüsü öne çıkan sayılar">
+            <div>
+              <dt>12K+</dt>
+              <dd>Ulaşılan kişi</dd>
+            </div>
+            <div>
+              <dt>38</dt>
+              <dd>Şehirde faaliyet</dd>
+            </div>
+            <div>
+              <dt>94%</dt>
+              <dd>Doğrudan destek</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="hero-card" aria-label="Güncel destek özeti">
+          <div class="card-glow"></div>
+          <p class="card-label">Bu ayki hedef</p>
+          <h2>250 aileye sıcak yemek ve temel ihtiyaç desteği</h2>
+          <div class="progress-wrap" aria-label="Hedefin yüzde 72'si tamamlandı">
+            <span style="width: 72%"></span>
+          </div>
+          <div class="card-row">
+            <span>180 aileye ulaşıldı</span>
+            <strong>%72</strong>
+          </div>
+          <ul class="impact-list">
+            <li><span></span>Gıda kolisi dağıtımı</li>
+            <li><span></span>Öğrenci burs fonu</li>
+            <li><span></span>Gönüllü ziyaretleri</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section intro" id="hakkimizda">
+        <div>
+          <p class="eyebrow">Neden Gönül Köprüsü?</p>
+          <h2>Güven, şeffaflık ve hızlı aksiyon aynı yerde.</h2>
+        </div>
+        <p>
+          Her destek talebi doğrulanır, her katkı takip edilir ve her gönüllü görevi
+          net bir süreçle yönetilir. Böylece iyi niyet doğru kişiye, doğru zamanda ulaşır.
+        </p>
+      </section>
+
+      <section class="program-grid section" id="programlar" aria-labelledby="program-heading">
+        <div class="section-heading">
+          <p class="eyebrow">Programlar</p>
+          <h2 id="program-heading">Katkınızın dönüştüğü alanlar</h2>
+        </div>
+
+        <article class="program-card">
+          <span class="icon food" aria-hidden="true"></span>
+          <h3>Temel İhtiyaç</h3>
+          <p>Ailelere gıda, hijyen ve kıyafet desteği planlı teslimatlarla ulaştırılır.</p>
+        </article>
+        <article class="program-card">
+          <span class="icon education" aria-hidden="true"></span>
+          <h3>Eğitim Desteği</h3>
+          <p>Öğrenciler burs, kırtasiye ve mentorluk desteğiyle okul yolculuğunda güçlenir.</p>
+        </article>
+        <article class="program-card">
+          <span class="icon care" aria-hidden="true"></span>
+          <h3>Gönüllü Ziyaret</h3>
+          <p>Gönüllüler yalnız yaşayan büyükler ve ihtiyaç sahibi ailelerle düzenli bağ kurar.</p>
+        </article>
+      </section>
+
+      <section class="impact section" id="etki">
+        <div class="impact-panel">
+          <p class="eyebrow">Etki modeli</p>
+          <h2>Her adım ölçülür, her hikaye görünür kalır.</h2>
+          <p>
+            Destek süreci başvuru doğrulama, ihtiyaç eşleştirme, gönüllü görevlendirme
+            ve etki raporu adımlarından oluşur.
+          </p>
+        </div>
+        <div class="timeline" aria-label="Destek süreci">
+          <div>
+            <span>01</span>
+            <strong>İhtiyaç alınır</strong>
+            <p>Başvurular hassasiyetle incelenir ve önceliklendirilir.</p>
+          </div>
+          <div>
+            <span>02</span>
+            <strong>Destek eşleşir</strong>
+            <p>Bağışlar ve gönüllüler doğrulanmış ihtiyaçlarla buluşturulur.</p>
+          </div>
+          <div>
+            <span>03</span>
+            <strong>Sonuç paylaşılır</strong>
+            <p>Katkının ulaştığı nokta anlaşılır raporlarla görünür hale gelir.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="cta-section" id="katil">
+        <div>
+          <p class="eyebrow">Bir köprü de sen kur</p>
+          <h2>Bugün küçük bir adım, yarın büyük bir dayanışma olabilir.</h2>
+        </div>
+        <a class="button primary light" href="mailto:merhaba@gonulkoprusu.org">İletişime Geç</a>
+      </section>
+    </main>
+
+    <footer class="site-footer" id="iletisim">
+      <div>
+        <a class="brand" href="#anasayfa">
+          <span class="brand-mark" aria-hidden="true">GK</span>
+          <span>Gönül Köprüsü</span>
+        </a>
+        <p>İyiliği organize eden, güveni büyüten topluluk.</p>
+      </div>
+      <div class="footer-links">
+        <a href="mailto:merhaba@gonulkoprusu.org">merhaba@gonulkoprusu.org</a>
+        <a href="tel:+902120000000">+90 212 000 00 00</a>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
