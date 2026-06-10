@@ -506,6 +506,15 @@ p {
     visibility: visible;
   }
 
+  body.nav-open::before {
+    position: fixed;
+    inset: 0;
+    z-index: 9;
+    background: rgba(255, 250, 243, 0.78);
+    backdrop-filter: blur(2px);
+    content: "";
+  }
+
   .site-nav a {
     padding: 14px;
   }
