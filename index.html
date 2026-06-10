@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Gönül Köprüsü — İyiliği büyüten dayanışma platformu. Gönüllü olun, destek olun, bir köprü kurun." />
+  <title>Gönül Köprüsü | İyiliğe Açılan Köprü</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:ital,wght@0,500;1,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+</head>
+<body>
+
+  <!-- ===== Header ===== -->
+  <header class="header" id="header">
+    <div class="container header__inner">
+      <a href="#" class="logo" aria-label="Gönül Köprüsü Ana Sayfa">
+        <svg class="logo__icon" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+          <path d="M4 30 Q20 8 36 30" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <path d="M20 14.5c-1.8-2.6-5.4-2.9-7.2-.8-1.6 1.9-1.2 4.6.8 6.4l6.4 5.5 6.4-5.5c2-1.8 2.4-4.5.8-6.4-1.8-2.1-5.4-1.8-7.2.8z" fill="var(--clr-accent, #ff7a59)"/>
+        </svg>
+        <span>Gönül<em>Köprüsü</em></span>
+      </a>
+
+      <nav class="nav" id="nav" aria-label="Ana menü">
+        <ul class="nav__list">
+          <li><a href="#hakkimizda" class="nav__link">Hakkımızda</a></li>
+          <li><a href="#nasil-calisir" class="nav__link">Nasıl Çalışır?</a></li>
+          <li><a href="#kampanyalar" class="nav__link">Kampanyalar</a></li>
+          <li><a href="#hikayeler" class="nav__link">Hikâyeler</a></li>
+          <li><a href="#iletisim" class="nav__link">İletişim</a></li>
+        </ul>
+      </nav>
+
+      <a href="#gonullu-ol" class="btn btn--primary header__cta">Gönüllü Ol</a>
+
+      <button class="nav-toggle" id="navToggle" aria-label="Menüyü aç/kapat" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===== Hero ===== -->
+    <section class="hero">
+      <div class="hero__bg" aria-hidden="true">
+        <div class="hero__blob hero__blob--1"></div>
+        <div class="hero__blob hero__blob--2"></div>
+        <div class="hero__grid"></div>
+      </div>
+
+      <div class="container hero__inner">
+        <div class="hero__content reveal">
+          <span class="badge">🤝 12.000+ gönüllü aramızda</span>
+          <h1 class="hero__title">
+            İyilik için bir <span class="highlight">köprü</span> kur,<br />
+            bir hayata <span class="highlight-alt">dokun.</span>
+          </h1>
+          <p class="hero__text">
+            Gönül Köprüsü; yardıma ihtiyacı olanlarla gönüllüleri bir araya getiren
+            dayanışma platformudur. Küçük bir adım, büyük bir umut olur.
+          </p>
+          <div class="hero__actions">
+            <a href="#gonullu-ol" class="btn btn--primary btn--lg">Hemen Gönüllü Ol</a>
+            <a href="#kampanyalar" class="btn btn--ghost btn--lg">Kampanyaları Keşfet</a>
+          </div>
+
+          <dl class="hero__stats">
+            <div class="stat">
+              <dt class="stat__num" data-count="12480">0</dt>
+              <dd class="stat__label">Gönüllü</dd>
+            </div>
+            <div class="stat">
+              <dt class="stat__num" data-count="348">0</dt>
+              <dd class="stat__label">Tamamlanan Proje</dd>
+            </div>
+            <div class="stat">
+              <dt class="stat__num" data-count="81">0</dt>
+              <dd class="stat__label">İlde Faaliyet</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="hero__visual reveal reveal--delay" aria-hidden="true">
+          <div class="hero-card hero-card--main">
+            <div class="hero-card__icon">💛</div>
+            <h3>Bugün 142 köprü kuruldu</h3>
+            <p>Gönüllüler ve ihtiyaç sahipleri buluştu</p>
+            <div class="hero-card__bar"><span style="--w: 78%"></span></div>
+          </div>
+          <div class="hero-card hero-card--float-1">
+            <div class="hero-card__avatar">A</div>
+            <div>
+              <strong>Ayşe K.</strong>
+              <small>Eğitim gönüllüsü oldu</small>
+            </div>
+          </div>
+          <div class="hero-card hero-card--float-2">
+            <div class="hero-card__avatar hero-card__avatar--alt">M</div>
+            <div>
+              <strong>Mehmet T.</strong>
+              <small>Kış kampanyasına katıldı</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Hakkımızda ===== -->
+    <section class="section about" id="hakkimizda">
+      <div class="container about__inner">
+        <div class="about__visual reveal">
+          <div class="about__shape">
+            <svg viewBox="0 0 200 200" aria-hidden="true">
+              <path d="M20 140 Q100 40 180 140" stroke="currentColor" stroke-width="10" stroke-linecap="round" fill="none" opacity="0.25"/>
+              <path d="M35 140 Q100 60 165 140" stroke="currentColor" stroke-width="10" stroke-linecap="round" fill="none" opacity="0.5"/>
+              <path d="M50 140 Q100 80 150 140" stroke="currentColor" stroke-width="10" stroke-linecap="round" fill="none"/>
+              <circle cx="100" cy="100" r="14" fill="var(--clr-accent)"/>
+            </svg>
+          </div>
+          <blockquote class="about__quote">
+            “İyilik, paylaştıkça çoğalan tek hazinedir.”
+          </blockquote>
+        </div>
+        <div class="about__content reveal reveal--delay">
+          <span class="section-tag">Hakkımızda</span>
+          <h2 class="section-title">Gönülden gönüle uzanan bir dayanışma ağı</h2>
+          <p>
+            2018'den bu yana; eğitimden gıdaya, afet desteğinden yaşlı bakımına kadar
+            pek çok alanda ihtiyaç sahipleriyle gönüllüleri buluşturuyoruz.
+            Amacımız basit: <strong>iyiliği ulaşılabilir kılmak.</strong>
+          </p>
+          <ul class="check-list">
+            <li>Şeffaf ve denetlenebilir yardım süreçleri</li>
+            <li>81 ilde aktif gönüllü koordinasyonu</li>
+            <li>%100 bağış aktarım garantisi</li>
+            <li>Kurumsal iş birlikleri ve sosyal sorumluluk projeleri</li>
+          </ul>
+          <a href="#gonullu-ol" class="btn btn--primary">Aramıza Katıl</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Nasıl Çalışır ===== -->
+    <section class="section section--alt steps" id="nasil-calisir">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="section-tag">Nasıl Çalışır?</span>
+          <h2 class="section-title">Üç adımda iyiliğe köprü ol</h2>
+          <p class="section-sub">Karmaşık süreçler yok. Sadece niyet, bir tık ve dayanışma.</p>
+        </div>
+
+        <div class="steps__grid">
+          <article class="step-card reveal">
+            <span class="step-card__num">01</span>
+            <div class="step-card__icon">📝</div>
+            <h3>Kaydol</h3>
+            <p>Birkaç dakikada profilini oluştur; ilgi alanlarını ve müsait zamanlarını belirt.</p>
+          </article>
+          <article class="step-card reveal reveal--delay">
+            <span class="step-card__num">02</span>
+            <div class="step-card__icon">🔍</div>
+            <h3>Eşleş</h3>
+            <p>Sana en uygun kampanya ve ihtiyaç sahipleriyle akıllı eşleştirme sistemiyle buluş.</p>
+          </article>
+          <article class="step-card reveal reveal--delay-2">
+            <span class="step-card__num">03</span>
+            <div class="step-card__icon">🌉</div>
+            <h3>Köprü Kur</h3>
+            <p>Desteğini ulaştır, etkini takip et ve hikâyeni toplulukla paylaş.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Kampanyalar ===== -->
+    <section class="section campaigns" id="kampanyalar">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="section-tag">Kampanyalar</span>
+          <h2 class="section-title">Şu anda desteğini bekleyenler</h2>
+          <p class="section-sub">Her kampanya, gerçek bir ihtiyacın hikâyesidir.</p>
+        </div>
+
+        <div class="campaigns__grid">
+          <article class="camp-card reveal">
+            <div class="camp-card__media camp-card__media--edu">
+              <span class="camp-card__tag">Eğitim</span>
+              <span class="camp-card__emoji">🎒</span>
+            </div>
+            <div class="camp-card__body">
+              <h3>Köy Okuluna Kitaplık</h3>
+              <p>Ardahan'daki 6 köy okuluna kitaplık ve 3.000 kitap ulaştırıyoruz.</p>
+              <div class="progress">
+                <div class="progress__bar"><span style="--w: 72%"></span></div>
+                <div class="progress__meta"><strong>%72</strong><small>hedefe ulaşıldı</small></div>
+              </div>
+              <a href="#gonullu-ol" class="camp-card__link">Destek Ol →</a>
+            </div>
+          </article>
+
+          <article class="camp-card reveal reveal--delay">
+            <div class="camp-card__media camp-card__media--food">
+              <span class="camp-card__tag">Gıda</span>
+              <span class="camp-card__emoji">🥖</span>
+            </div>
+            <div class="camp-card__body">
+              <h3>Sıcak Çorba Bir Selam</h3>
+              <p>Her akşam 500 kişiye sıcak yemek ulaştıran mutfağımıza el ver.</p>
+              <div class="progress">
+                <div class="progress__bar"><span style="--w: 45%"></span></div>
+                <div class="progress__meta"><strong>%45</strong><small>hedefe ulaşıldı</small></div>
+              </div>
+              <a href="#gonullu-ol" class="camp-card__link">Destek Ol →</a>
+            </div>
+          </article>
+
+          <article class="camp-card reveal reveal--delay-2">
+            <div class="camp-card__media camp-card__media--winter">
+              <span class="camp-card__tag">Kış Desteği</span>
+              <span class="camp-card__emoji">🧣</span>
+            </div>
+            <div class="camp-card__body">
+              <h3>Bir Atkı Bir Umut</h3>
+              <p>Soğuk kış günlerinde 2.000 çocuğa mont, bot ve atkı hediye ediyoruz.</p>
+              <div class="progress">
+                <div class="progress__bar"><span style="--w: 88%"></span></div>
+                <div class="progress__meta"><strong>%88</strong><small>hedefe ulaşıldı</small></div>
+              </div>
+              <a href="#gonullu-ol" class="camp-card__link">Destek Ol →</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Hikâyeler ===== -->
+    <section class="section section--alt stories" id="hikayeler">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="section-tag">Hikâyeler</span>
+          <h2 class="section-title">Köprünün iki yakasından sesler</h2>
+        </div>
+
+        <div class="stories__grid">
+          <figure class="story-card reveal">
+            <blockquote>
+              “Üniversite sınavına hazırlanırken Gönül Köprüsü'nden gelen ders desteğiyle
+              hayalimdeki bölümü kazandım. Şimdi ben de gönüllü öğretmenim.”
+            </blockquote>
+            <figcaption>
+              <span class="story-card__avatar">Z</span>
+              <div><strong>Zeynep A.</strong><small>Burs öğrencisi → Gönüllü</small></div>
+            </figcaption>
+          </figure>
+
+          <figure class="story-card reveal reveal--delay">
+            <blockquote>
+              “Haftada iki saatimi ayırarak bir çocuğun okuma yazma öğrenmesine
+              tanıklık etmek… Bunun tarifi yok.”
+            </blockquote>
+            <figcaption>
+              <span class="story-card__avatar story-card__avatar--alt">E</span>
+              <div><strong>Emre D.</strong><small>Eğitim gönüllüsü</small></div>
+            </figcaption>
+          </figure>
+
+          <figure class="story-card reveal reveal--delay-2">
+            <blockquote>
+              “Depremden sonra her şeyimizi kaybettik sanmıştım. Gönül Köprüsü bize
+              yalnız olmadığımızı gösterdi.”
+            </blockquote>
+            <figcaption>
+              <span class="story-card__avatar story-card__avatar--third">H</span>
+              <div><strong>Hatice Y.</strong><small>Afet destek programı</small></div>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Gönüllü Ol (CTA + Form) ===== -->
+    <section class="section volunteer" id="gonullu-ol">
+      <div class="container volunteer__inner">
+        <div class="volunteer__content reveal">
+          <span class="section-tag section-tag--light">Gönüllü Ol</span>
+          <h2 class="section-title">Köprünün bir ucundan sen tut</h2>
+          <p>
+            İster haftada bir saat, ister her gün… Her katkı değerlidir.
+            Formu doldur, sana en uygun gönüllülük fırsatlarıyla eşleşelim.
+          </p>
+          <ul class="volunteer__perks">
+            <li>🎓 Eğitim ve mentorluk</li>
+            <li>📦 Saha ve lojistik desteği</li>
+            <li>💻 Uzaktan / çevrim içi gönüllülük</li>
+            <li>🎨 İçerik, tasarım ve iletişim</li>
+          </ul>
+        </div>
+
+        <form class="volunteer__form reveal reveal--delay" id="volunteerForm" novalidate>
+          <h3>Gönüllü Başvuru Formu</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="adsoyad">Ad Soyad</label>
+              <input type="text" id="adsoyad" name="adsoyad" placeholder="Adınız Soyadınız" required />
+            </div>
+            <div class="form-group">
+              <label for="sehir">Şehir</label>
+              <input type="text" id="sehir" name="sehir" placeholder="İstanbul" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="eposta">E-posta</label>
+            <input type="email" id="eposta" name="eposta" placeholder="ornek@eposta.com" required />
+          </div>
+          <div class="form-group">
+            <label for="alan">İlgi Alanı</label>
+            <select id="alan" name="alan" required>
+              <option value="" disabled selected>Seçiniz…</option>
+              <option>Eğitim &amp; Mentorluk</option>
+              <option>Saha &amp; Lojistik</option>
+              <option>Çevrim içi Gönüllülük</option>
+              <option>İçerik &amp; Tasarım</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="mesaj">Mesajın (isteğe bağlı)</label>
+            <textarea id="mesaj" name="mesaj" rows="3" placeholder="Kendinden kısaca bahset…"></textarea>
+          </div>
+          <button type="submit" class="btn btn--primary btn--block">Başvuruyu Gönder</button>
+          <p class="form-note" id="formNote" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- ===== İletişim bandı ===== -->
+    <section class="contact-band" id="iletisim">
+      <div class="container contact-band__inner reveal">
+        <div>
+          <h2>Sorunuz mu var?</h2>
+          <p>Ekibimiz hafta içi 09.00 – 18.00 arasında yanınızda.</p>
+        </div>
+        <div class="contact-band__items">
+          <a href="mailto:merhaba@gonulkoprusu.org" class="contact-item">
+            <span class="contact-item__icon">✉️</span>
+            merhaba@gonulkoprusu.org
+          </a>
+          <a href="tel:+908502220000" class="contact-item">
+            <span class="contact-item__icon">📞</span>
+            0850 222 00 00
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <a href="#" class="logo logo--light">
+          <svg class="logo__icon" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+            <path d="M4 30 Q20 8 36 30" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+            <path d="M20 14.5c-1.8-2.6-5.4-2.9-7.2-.8-1.6 1.9-1.2 4.6.8 6.4l6.4 5.5 6.4-5.5c2-1.8 2.4-4.5.8-6.4-1.8-2.1-5.4-1.8-7.2.8z" fill="#ff7a59"/>
+          </svg>
+          <span>Gönül<em>Köprüsü</em></span>
+        </a>
+        <p>İyiliği büyüten dayanışma platformu.</p>
+      </div>
+
+      <nav class="footer__col" aria-label="Site haritası">
+        <h4>Keşfet</h4>
+        <a href="#hakkimizda">Hakkımızda</a>
+        <a href="#kampanyalar">Kampanyalar</a>
+        <a href="#hikayeler">Hikâyeler</a>
+        <a href="#gonullu-ol">Gönüllü Ol</a>
+      </nav>
+
+      <nav class="footer__col" aria-label="Yasal bağlantılar">
+        <h4>Kurumsal</h4>
+        <a href="#">Şeffaflık Raporu</a>
+        <a href="#">KVKK Aydınlatma Metni</a>
+        <a href="#">Bağışçı Hakları</a>
+        <a href="#">SSS</a>
+      </nav>
+
+      <div class="footer__col">
+        <h4>Bizi Takip Et</h4>
+        <div class="footer__social">
+          <a href="#" aria-label="Twitter">𝕏</a>
+          <a href="#" aria-label="Instagram">📷</a>
+          <a href="#" aria-label="YouTube">▶️</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <div class="container">
+        <p>© 2026 Gönül Köprüsü Derneği. Tüm hakları saklıdır.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
