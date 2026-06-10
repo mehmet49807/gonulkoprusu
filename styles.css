@@ -544,6 +544,22 @@ h3 {
     height: 2px;
     border-radius: 999px;
     background: var(--ink);
+    transform-origin: center;
+    transition:
+      opacity 180ms ease,
+      transform 180ms ease;
+  }
+
+  .site-header.is-open .nav-toggle span:nth-child(2) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .site-header.is-open .nav-toggle span:nth-child(3) {
+    opacity: 0;
+  }
+
+  .site-header.is-open .nav-toggle span:nth-child(4) {
+    transform: translateY(-7px) rotate(-45deg);
   }
 
   .site-nav,
