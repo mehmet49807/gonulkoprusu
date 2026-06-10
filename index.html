@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gonul Koprusu | New Design</title>
+    <meta
+      name="description"
+      content="Modern, responsive website redesign for Gonul Koprusu."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <script defer src="./script.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav-shell">
+        <a class="brand" href="#top">Gonul Koprusu</a>
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="primary-nav"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <nav id="primary-nav" class="nav-links">
+          <a href="#features">Features</a>
+          <a href="#how-it-works">How it works</a>
+          <a href="#testimonials">Testimonials</a>
+          <a href="#contact" class="button button-sm">Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="container hero-grid">
+          <div class="hero-content">
+            <p class="eyebrow">New generation web experience</p>
+            <h1>Beautifully redesigned for speed, trust, and growth.</h1>
+            <p class="lead">
+              A clean and modern interface that helps visitors understand your
+              mission in seconds and take action with confidence.
+            </p>
+            <div class="hero-actions">
+              <a class="button" href="#contact">Start now</a>
+              <a class="button button-ghost" href="#features">See details</a>
+            </div>
+            <div class="hero-metrics">
+              <div>
+                <strong>+38%</strong>
+                <span>Conversion lift</span>
+              </div>
+              <div>
+                <strong>98/100</strong>
+                <span>Performance score</span>
+              </div>
+              <div>
+                <strong>24/7</strong>
+                <span>Visitor support flow</span>
+              </div>
+            </div>
+          </div>
+          <div class="hero-panel" aria-hidden="true">
+            <div class="hero-card">
+              <p class="hero-card-title">Campaign Snapshot</p>
+              <div class="mini-chart">
+                <span style="height: 26%"></span>
+                <span style="height: 44%"></span>
+                <span style="height: 52%"></span>
+                <span style="height: 72%"></span>
+                <span style="height: 88%"></span>
+                <span style="height: 62%"></span>
+              </div>
+              <div class="hero-card-foot">
+                <p>Donor activity</p>
+                <strong>+12.4% this week</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="features" class="section">
+        <div class="container">
+          <div class="section-head">
+            <p class="eyebrow">Features</p>
+            <h2>Designed to communicate value instantly</h2>
+          </div>
+          <div class="feature-grid">
+            <article class="feature-card">
+              <h3>Modern visual system</h3>
+              <p>
+                Consistent typography, spacing, and color tokens create a
+                polished brand experience.
+              </p>
+            </article>
+            <article class="feature-card">
+              <h3>Conversion-focused layout</h3>
+              <p>
+                Clear sections and strategic call-to-actions guide visitors
+                toward key actions naturally.
+              </p>
+            </article>
+            <article class="feature-card">
+              <h3>Fast and responsive</h3>
+              <p>
+                Optimized structure adapts fluidly to mobile, tablet, and
+                desktop without sacrificing speed.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="how-it-works" class="section section-alt">
+        <div class="container">
+          <div class="section-head">
+            <p class="eyebrow">How it works</p>
+            <h2>Simple flow, clear outcomes</h2>
+          </div>
+          <ol class="steps">
+            <li>
+              <h3>Discover</h3>
+              <p>Visitors quickly understand your message through focused copy and hierarchy.</p>
+            </li>
+            <li>
+              <h3>Engage</h3>
+              <p>Interactive sections and trust signals keep attention on your main story.</p>
+            </li>
+            <li>
+              <h3>Act</h3>
+              <p>Prominent actions make it easy to contact, donate, or subscribe.</p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="testimonials" class="section">
+        <div class="container">
+          <div class="section-head">
+            <p class="eyebrow">Testimonials</p>
+            <h2>What partners say</h2>
+          </div>
+          <div class="testimonial-grid">
+            <blockquote>
+              "The new design made our message clearer and boosted engagement in the first week."
+            </blockquote>
+            <blockquote>
+              "Visitors now find what they need quickly, especially on mobile."
+            </blockquote>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" class="section cta">
+        <div class="container cta-shell">
+          <div>
+            <p class="eyebrow">Ready to continue?</p>
+            <h2>Approve this direction and we can finalize it for launch.</h2>
+          </div>
+          <a class="button" href="mailto:hello@example.com">Request handoff</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-shell">
+        <p>© <span id="year"></span> Gonul Koprusu. All rights reserved.</p>
+      </div>
+    </footer>
+  </body>
+</html>
