@@ -289,6 +289,7 @@ a:hover { color: var(--plum); }
     overflow: hidden;
     display: flex;
     align-items: center;
+    background: var(--grad-hero);
 }
 
 .hero-photo-bg {
@@ -296,22 +297,18 @@ a:hover { color: var(--plum); }
     inset: 0;
     background-size: cover;
     background-position: center 30%;
+    opacity: 0.35;
 }
 
 .hero-photo-overlay {
     position: absolute;
     inset: 0;
     background: linear-gradient(
-        100deg,
-        rgba(30, 15, 48, 0.82) 0%,
-        rgba(107, 63, 160, 0.65) 50%,
-        rgba(194, 87, 122, 0.35) 100%
+        110deg,
+        rgba(30, 15, 48, 0.78) 0%,
+        rgba(107, 63, 160, 0.55) 55%,
+        rgba(194, 87, 122, 0.32) 100%
     );
-}
-
-/* Animated gradient hero (no image fallback) */
-.hero-photo:not(:has(.hero-photo-bg[style*="url"])) {
-    background: var(--grad-hero);
 }
 
 .hero-photo-inner {
