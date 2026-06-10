@@ -481,13 +481,14 @@ p {
     top: 78px;
     right: 16px;
     left: 16px;
+    z-index: 20;
     display: grid;
     gap: 8px;
     padding: 16px;
     border: 1px solid var(--line);
     border-radius: 24px;
-    background: rgba(255, 250, 243, 0.96);
-    box-shadow: var(--shadow);
+    background: #fffaf3;
+    box-shadow: 0 22px 60px rgba(36, 22, 15, 0.22);
     opacity: 0;
     pointer-events: none;
     transform: translateY(-8px);
