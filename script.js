@@ -13,7 +13,28 @@ navToggle.addEventListener("click", () => {
 });
 
 nav.addEventListener("click", (event) => {
-  if (event.target instanceof HTMLAnchorElement) {
+  if (!(event.target instanceof HTMLAnchorElement)) {
+    return;
+  }
+
+  const isOpen = document.body.classList.contains("nav-open");
+
+  if (!isOpen) {
+    return;
+  }
+
+  const href = event.target.getAttribute("href");
+  const destination = href?.startsWith("#")
+    ? document.getElementById(href.slice(1))
+    : null;
+
+  if (destination) {
+    event.preventDefault();
+    setMenuState(false);
+    window.setTimeout(() => {
+      destination.scrollIntoView({ behavior: "smooth" });
+    }, 180);
+  } else {
     setMenuState(false);
   }
 });
