@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gönül Köprüsü — Logo Önizleme</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/app.css?v=gul-bahcesi-logo-v1">
+    <style>
+        body { padding: 48px 24px 80px; background: #FFF9F5; }
+        .preview-wrap { max-width: 900px; margin: 0 auto; }
+        h1 { font-family: 'Playfair Display', serif; color: #8B3A62; margin-bottom: 8px; }
+        .preview-note { color: #9A7A88; margin-bottom: 40px; }
+        .preview-grid { display: grid; gap: 32px; }
+        .preview-card {
+            background: #fff;
+            border: 1px solid #EDD5DC;
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 8px 32px rgba(139, 58, 98, 0.08);
+        }
+        .preview-card h2 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; color: #C4577A; margin-bottom: 20px; }
+        .preview-row { display: flex; flex-wrap: wrap; gap: 32px; align-items: center; }
+        .preview-dark { background: linear-gradient(135deg, #3D2B35, #6B2D4E); }
+        .preview-dark h2 { color: #E8A0B4; }
+        .preview-sizes { display: flex; gap: 24px; align-items: flex-end; flex-wrap: wrap; }
+        .preview-sizes img { display: block; }
+        .size-label { font-size: 0.75rem; color: #9A7A88; margin-top: 8px; text-align: center; }
+        .preview-meaning { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px; }
+        .meaning-item { text-align: center; padding: 16px; background: #FCE8E6; border-radius: 12px; }
+        .meaning-item strong { display: block; color: #8B3A62; margin-bottom: 4px; }
+        .meaning-item span { font-size: 0.85rem; color: #6B4A58; }
+        @media (max-width: 700px) { .preview-meaning { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="preview-wrap">
+        <h1>Yeni Logo — Marka Kimliği</h1>
+        <p class="preview-note">Köprü + kalp sembolü · Gül Bahçesi renk paleti · Henüz canlıya yüklenmedi</p>
+
+        <div class="preview-grid">
+            <div class="preview-card">
+                <h2>Site logosu (header)</h2>
+                <a href="#" class="logo logo-header">
+                    <span class="logo-mark" aria-hidden="true">
+                        <img src="images/logo-mark.svg" alt="" width="40" height="40">
+                    </span>
+                    <div class="logo-text">
+                        <span class="logo-name">Gönül Köprüsü</span>
+                        <span class="logo-tagline">Gönülleri Birleştiren Köprü</span>
+                    </div>
+                </a>
+            </div>
+
+            <div class="preview-card">
+                <h2>Tam logo (yatay)</h2>
+                <img src="images/logo-full.svg" alt="Gönül Köprüsü tam logo" width="280" height="56">
+            </div>
+
+            <div class="preview-card">
+                <h2>Logo işareti — boyutlar</h2>
+                <div class="preview-sizes">
+                    <div><img src="images/logo-mark.svg" width="16" height="16" alt="16px"><div class="size-label">16px favicon</div></div>
+                    <div><img src="images/logo-mark.svg" width="32" height="32" alt="32px"><div class="size-label">32px mobil</div></div>
+                    <div><img src="images/logo-mark.svg" width="48" height="48" alt="48px"><div class="size-label">48px standart</div></div>
+                    <div><img src="images/logo-mark.svg" width="96" height="96" alt="96px"><div class="size-label">96px büyük</div></div>
+                </div>
+            </div>
+
+            <div class="preview-card preview-dark">
+                <h2>Koyu arka plan</h2>
+                <div class="preview-row">
+                    <img src="images/logo-mark.svg" width="48" height="48" alt="">
+                    <img src="images/logo-full.svg" alt="" style="filter: brightness(1.1);">
+                </div>
+            </div>
+
+            <div class="preview-card">
+                <h2>Sembol anlamı</h2>
+                <div class="preview-meaning">
+                    <div class="meaning-item">
+                        <strong>🌉 Köprü</strong>
+                        <span>İki insanı güvenle bir araya getiren bağlantı</span>
+                    </div>
+                    <div class="meaning-item">
+                        <strong>💗 Kalp</strong>
+                        <span>Gönülden gönüle samimi ve ciddi ilişki</span>
+                    </div>
+                    <div class="meaning-item">
+                        <strong>🌹 Gül tonları</strong>
+                        <span>Sıcaklık, güven ve romantizm</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
