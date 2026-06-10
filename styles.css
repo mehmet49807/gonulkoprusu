@@ -529,8 +529,7 @@ h3 {
   .nav-toggle {
     position: relative;
     z-index: 30;
-    display: grid;
-    gap: 5px;
+    display: block;
     width: 44px;
     height: 44px;
     padding: 12px;
@@ -541,6 +540,9 @@ h3 {
 
   .nav-toggle span:not(.sr-only) {
     display: block;
+    position: absolute;
+    left: 12px;
+    width: 20px;
     height: 2px;
     border-radius: 999px;
     background: var(--ink);
@@ -550,8 +552,21 @@ h3 {
       transform 180ms ease;
   }
 
+  .nav-toggle span:nth-child(2) {
+    top: 14px;
+  }
+
+  .nav-toggle span:nth-child(3) {
+    top: 21px;
+  }
+
+  .nav-toggle span:nth-child(4) {
+    top: 28px;
+  }
+
   .site-header.is-open .nav-toggle span:nth-child(2) {
-    transform: translateY(7px) rotate(45deg);
+    top: 21px;
+    transform: rotate(45deg);
   }
 
   .site-header.is-open .nav-toggle span:nth-child(3) {
@@ -559,7 +574,8 @@ h3 {
   }
 
   .site-header.is-open .nav-toggle span:nth-child(4) {
-    transform: translateY(-7px) rotate(-45deg);
+    top: 21px;
+    transform: rotate(-45deg);
   }
 
   .site-nav,
@@ -580,7 +596,7 @@ h3 {
     padding: 16px;
     border: 1px solid var(--border);
     border-radius: 26px;
-    background: rgba(255, 253, 250, 0.98);
+    background: #fffdfa;
     box-shadow: var(--shadow);
   }
 
