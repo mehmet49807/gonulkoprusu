@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Gönül Köprüsü')</title>
-    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+    <link rel="icon" href="{{ asset('favicon.svg') }}?v=logo-v1" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}?v=gul-bahcesi-v2">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}?v=gul-bahcesi-logo-v1">
 </head>
 @php $appShell = trim($__env->yieldContent('body-class')) === 'app-shell'; @endphp
 <body class="site-body @yield('body-class')">
