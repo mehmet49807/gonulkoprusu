@@ -80,12 +80,11 @@
           selectedAmount
         )} bağışınız için onay e-postası gönderildi. 💚`;
       }
-      donateForm.reset();
-      amountBtns.forEach((b) => b.classList.remove("is-active"));
-      const def = donateForm.querySelector('.amount[data-amount="500"]');
-      if (def) def.classList.add("is-active");
-      selectedAmount = 500;
-      updateDonateBtn();
+      // Seçilen tutar korunur; yalnızca kişisel alanlar temizlenir.
+      name.value = "";
+      email.value = "";
+      const recurring = $("#recurring");
+      if (recurring) recurring.checked = false;
     });
   }
 
