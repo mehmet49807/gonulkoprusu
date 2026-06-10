@@ -1,0 +1,12 @@
+gonulkoprusu-backend-web.zip
+__MACOSX/
+gonulkoprusu-backend-web/vendor/
+gonulkoprusu-backend-web/storage/logs/
+gonulkoprusu-backend-web/storage/framework/views/
+gonulkoprusu-backend-web/storage/framework/sessions/
+gonulkoprusu-backend-web/storage/framework/cache/
+gonulkoprusu-backend-web/database/database.sqlite
+gonulkoprusu-backend-web/.env
+gonulkoprusu-backend-web/public/vendor
+gonulkoprusu-backend-web/public/bootstrap
+gonulkoprusu-backend-web/public/storage
