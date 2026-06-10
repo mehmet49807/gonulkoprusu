@@ -110,21 +110,35 @@ a {
 
 .nav-toggle {
   display: none;
+  position: relative;
+  width: 42px;
+  height: 42px;
+  padding: 0;
   border: 0;
+  border-radius: 50%;
   background: transparent;
   cursor: pointer;
 }
 
 .nav-toggle span {
+  position: absolute;
+  left: 9px;
   display: block;
   width: 24px;
   height: 2px;
-  margin: 5px 0;
   border-radius: 999px;
   background: var(--ink);
   transition:
     transform 180ms ease,
     opacity 180ms ease;
+}
+
+.nav-toggle span:nth-child(1) {
+  transform: translateY(-7px);
+}
+
+.nav-toggle span:nth-child(3) {
+  transform: translateY(7px);
 }
 
 .section-shell {
@@ -461,11 +475,13 @@ p {
   }
 
   .nav-toggle {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .nav-toggle[aria-expanded="true"] span:nth-child(1) {
-    transform: translateY(7px) rotate(45deg);
+    transform: rotate(45deg);
   }
 
   .nav-toggle[aria-expanded="true"] span:nth-child(2) {
@@ -473,7 +489,7 @@ p {
   }
 
   .nav-toggle[aria-expanded="true"] span:nth-child(3) {
-    transform: translateY(-7px) rotate(-45deg);
+    transform: rotate(-45deg);
   }
 
   .site-nav {
