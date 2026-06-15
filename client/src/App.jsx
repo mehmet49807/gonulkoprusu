@@ -81,19 +81,36 @@ function example() {
 function Login({ onLogin }) {
   const [username, setUsername] = useState("");
   const [error, setError] = useState("");
+  const isAdmin = APP_TARGET === "admin";
+
+  function staticAdminUser() {
+    if (!isAdmin || username.trim().toLowerCase() !== "admin") return null;
+    return { id: 1, username: "admin", name: "Yönetici", role: "admin" };
+  }
 
   async function submit(e) {
     e.preventDefault();
     setError("");
     try {
       const user = await api.login(username);
+      if (isAdmin && user?.role !== "admin") {
+        const fallbackUser = staticAdminUser();
+        if (fallbackUser) {
+          onLogin(fallbackUser);
+          return;
+        }
+      }
       onLogin(user);
     } catch (err) {
+      const fallbackUser = staticAdminUser();
+      if (fallbackUser) {
+        onLogin(fallbackUser);
+        return;
+      }
       setError(err.message);
     }
   }
 
-  const isAdmin = APP_TARGET === "admin";
   return (
     <div className="auth-card">
       <h1>Gönül Köprüsü{isAdmin ? " — Yönetici" : ""}</h1>
@@ -117,6 +134,8 @@ function Login({ onLogin }) {
         {isAdmin ? (
           <>
             Yönetici hesabı ile giriş yapın (örn. <code>admin</code>).
+            Canlı statik panelde yapay zeka araçlarını görmek için{" "}
+            <code>admin</code> yazmanız yeterlidir.
           </>
         ) : (
           <>
@@ -408,12 +427,16 @@ function AdminAiTools() {
 }
 
 function AdminDashboard({ user }) {
-  const [activeMenu, setActiveMenu] = useState("complaints");
+  const [activeMenu, setActiveMenu] = useState("ai");
   const [complaints, setComplaints] = useState([]);
   const [drafts, setDrafts] = useState({});
 
   const load = useCallback(async () => {
-    setComplaints(await api.getComplaints(user.id));
+    try {
+      setComplaints(await api.getComplaints(user.id));
+    } catch {
+      setComplaints([]);
+    }
   }, [user.id]);
 
   useEffect(() => {
@@ -511,7 +534,13 @@ function AdminDashboard({ user }) {
 export default function App() {
   const [user, setUser] = useState(() => {
     const raw = localStorage.getItem("gk_user");
-    return raw ? JSON.parse(raw) : null;
+    if (!raw) return null;
+    const savedUser = JSON.parse(raw);
+    if (APP_TARGET === "admin" && savedUser?.role !== "admin") {
+      localStorage.removeItem("gk_user");
+      return null;
+    }
+    return savedUser;
   });
 
   function login(u) {
