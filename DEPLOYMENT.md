@@ -44,6 +44,7 @@ Yönetici paneli (`/admin.gonulkoprusu.com`) için:
 | `FTP_ADMIN_PASSWORD` | Yönetici paneli FTP parolası |
 
 > Eski kurulumlarla uyumluluk için workflow hâlâ `FTP_SERVER`, `FTP_USERNAME` ve `FTP_PASSWORD` secret'larını fallback olarak okuyabilir. Yeni kurulumda site bazlı secret adlarını kullanın.
+> Ana site ve yönetici paneli aynı FTP kullanıcı adını kullanıyorsa hosting tarafında tek geçerli parola olur. Bu durumda workflow admin deploy için çalışan `FTP_PUBLIC_PASSWORD` değerini de kullanabilir.
 
 ### Variables (opsiyonel)
 
