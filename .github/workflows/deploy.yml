@@ -39,7 +39,7 @@ jobs:
         with:
           server: ${{ secrets.FTP_PUBLIC_SERVER || secrets.FTP_SERVER || 'ftp.gonulkoprusu.com' }}
           username: ${{ secrets.FTP_PUBLIC_USERNAME || secrets.FTP_USERNAME || 'panel@admin.gonulkoprusu.com' }}
-          password: ${{ secrets.FTP_PASSWORD || secrets.FTP_PUBLIC_PASSWORD }}
+          password: ${{ secrets.FTP_PASSWORD || secrets.FTP_ADMIN_PASSWORD || secrets.FTP_PUBLIC_PASSWORD }}
           protocol: ftp
           local-dir: ./client/dist/
           server-dir: /public_html/
