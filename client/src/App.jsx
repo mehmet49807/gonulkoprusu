@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { api } from "./api.js";
 
+// "public" -> gonulkoprusu.com (kullanıcı sitesi)
+// "admin"  -> admin.gonulkoprusu.com (yönetici paneli)
+const APP_TARGET = import.meta.env.VITE_APP_TARGET === "admin" ? "admin" : "public";
+
 const STATUS_LABELS = {
   open: { text: "Beklemede", cls: "badge-open" },
   resolved: { text: "Çözüldü", cls: "badge-resolved" },
@@ -22,24 +26,36 @@ function Login({ onLogin }) {
     }
   }
 
+  const isAdmin = APP_TARGET === "admin";
   return (
     <div className="auth-card">
-      <h1>Gönül Köprüsü</h1>
-      <p className="muted">Topluluk yardımlaşma ve şikayet platformu</p>
+      <h1>Gönül Köprüsü{isAdmin ? " — Yönetici" : ""}</h1>
+      <p className="muted">
+        {isAdmin
+          ? "Yönetici paneli girişi"
+          : "Topluluk yardımlaşma ve şikayet platformu"}
+      </p>
       <form onSubmit={submit}>
         <label>Kullanıcı adı</label>
         <input
           autoFocus
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          placeholder="ayse, mehmet veya admin"
+          placeholder={isAdmin ? "admin" : "ayse, mehmet veya admin"}
         />
         <button type="submit">Giriş yap</button>
       </form>
       {error && <p className="error">{error}</p>}
       <p className="hint">
-        Demo kullanıcıları: <code>ayse</code>, <code>mehmet</code> (kullanıcı) ·{" "}
-        <code>admin</code> (yönetici)
+        {isAdmin ? (
+          <>
+            Yönetici hesabı ile giriş yapın (örn. <code>admin</code>).
+          </>
+        ) : (
+          <>
+            Demo kullanıcıları: <code>ayse</code>, <code>mehmet</code> (kullanıcı)
+          </>
+        )}
       </p>
     </div>
   );
@@ -260,12 +276,47 @@ export default function App() {
 
   if (!user) return <Login onLogin={login} />;
 
+  const isAdminApp = APP_TARGET === "admin";
+
+  let body;
+  if (isAdminApp) {
+    body =
+      user.role === "admin" ? (
+        <AdminDashboard user={user} />
+      ) : (
+        <section className="card">
+          <h2>Yetkisiz erişim</h2>
+          <p className="muted">
+            Bu panel yalnızca yöneticilere açıktır. Kullanıcı işlemleri için
+            ana siteyi kullanın.
+          </p>
+        </section>
+      );
+  } else {
+    body =
+      user.role === "admin" ? (
+        <section className="card">
+          <h2>Yönetici hesabı</h2>
+          <p className="muted">
+            Yönetici paneli için <code>admin.gonulkoprusu.com</code> adresini
+            kullanın.
+          </p>
+        </section>
+      ) : (
+        <UserDashboard user={user} />
+      );
+  }
+
   return (
     <div className="app">
       <header className="topbar">
-        <div className="brand">Gönül Köprüsü</div>
+        <div className="brand">
+          Gönül Köprüsü{isAdminApp ? " — Yönetici" : ""}
+        </div>
         <div className="topbar-right">
-          {user.role !== "admin" && <NotificationBell user={user} />}
+          {!isAdminApp && user.role !== "admin" && (
+            <NotificationBell user={user} />
+          )}
           <span className="who">
             {user.name} {user.role === "admin" ? "(Yönetici)" : ""}
           </span>
@@ -274,13 +325,7 @@ export default function App() {
           </button>
         </div>
       </header>
-      <main>
-        {user.role === "admin" ? (
-          <AdminDashboard user={user} />
-        ) : (
-          <UserDashboard user={user} />
-        )}
-      </main>
+      <main>{body}</main>
     </div>
   );
 }

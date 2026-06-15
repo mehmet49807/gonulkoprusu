@@ -1,5 +1,9 @@
+// Deploy ortamlarında API farklı bir adreste olabilir; build sırasında
+// VITE_API_BASE ile ayarlanır. Geliştirmede boş bırakılır (Vite proxy /api -> :4000).
+const API_BASE = (import.meta.env.VITE_API_BASE || "").replace(/\/$/, "");
+
 async function request(path, options = {}) {
-  const res = await fetch(`/api${path}`, {
+  const res = await fetch(`${API_BASE}/api${path}`, {
     headers: { "Content-Type": "application/json" },
     ...options,
   });

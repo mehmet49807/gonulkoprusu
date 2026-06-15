@@ -1,0 +1,26 @@
+# Gönül Köprüsü SPA - Apache yapılandırması (paylaşımlı hosting)
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # Var olan dosya/dizinleri olduğu gibi sun
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+  # Diğer tüm istekleri SPA index.html'e yönlendir
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# Statik varlıklar için önbellek
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 month"
+  ExpiresByType image/webp "access plus 1 month"
+</IfModule>
+
+# index.html önbelleğe alınmasın (her deploy'da güncel gelsin)
+<IfModule mod_headers.c>
+  <FilesMatch "index\.html$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+  </FilesMatch>
+</IfModule>
