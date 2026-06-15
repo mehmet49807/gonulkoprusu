@@ -87,4 +87,4 @@ jobs:
           password: ${{ secrets.FTP_PUBLIC_PASSWORD || secrets.FTP_ADMIN_PASSWORD || secrets.FTP_PASSWORD }}
           protocol: ftp
           local-dir: ./client/dist/
-          server-dir: admin.gonulkoprusu.com/
+          server-dir: ./
