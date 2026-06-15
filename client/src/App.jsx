@@ -438,14 +438,20 @@ function AdminDashboard({ user }) {
           className={activeMenu === "complaints" ? "active" : ""}
           onClick={() => setActiveMenu("complaints")}
         >
-          Şikayetler
+          <span className="menu-icon" aria-hidden="true">
+            📋
+          </span>
+          <span>Şikayetler</span>
         </button>
         <button
           type="button"
           className={activeMenu === "ai" ? "active" : ""}
           onClick={() => setActiveMenu("ai")}
         >
-          Yapay Zeka Araçları
+          <span className="menu-icon" aria-hidden="true">
+            🤖
+          </span>
+          <span>Yapay Zeka Araçları</span>
         </button>
       </section>
 

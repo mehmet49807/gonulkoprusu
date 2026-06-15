@@ -215,11 +215,20 @@ button.link {
 }
 
 .admin-menu button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
   flex: 1;
   margin: 0;
   background: #f8fafc;
   color: #0f172a;
   border: 1px solid #e2e8f0;
+}
+
+.menu-icon {
+  font-size: 1.1rem;
+  line-height: 1;
 }
 
 .admin-menu button:hover,
