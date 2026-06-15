@@ -11,6 +11,7 @@ Akış: `.github/workflows/deploy.yml` → frontend'i derler (`client/dist`) →
 
 Hosting FTP sunucusu FTPS/TLS komutunu desteklemediği için workflow `protocol: ftp` kullanır.
 Yönetici paneli deploy'unda `.htaccess` oluşturulur; böylece hosting klasöründe eski `index.php` kalsa bile admin subdomain önce React `index.html` dosyasını açar.
+Hosting `index.php` dosyasını zorunlu olarak çalıştırırsa diye admin build ayrıca React girişini `index.php` olarak da yükler.
 
 ---
 

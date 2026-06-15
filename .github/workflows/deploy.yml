@@ -66,6 +66,7 @@ jobs:
 
       - name: Prefer React admin entry
         run: |
+          cp client/dist/index.html client/dist/index.php
           cat > client/dist/.htaccess <<'EOF'
           DirectoryIndex index.html index.php
 
