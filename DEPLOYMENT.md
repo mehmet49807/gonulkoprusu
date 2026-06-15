@@ -10,6 +10,7 @@ Bu proje GitHub'a her `main` push'unda **otomatik olarak FTP ile** yüklenir:
 Akış: `.github/workflows/deploy.yml` → frontend'i derler (`client/dist`) → `SamKirkland/FTP-Deploy-Action` ile sunucuya yükler.
 
 Hosting FTP sunucusu FTPS/TLS komutunu desteklemediği için workflow `protocol: ftp` kullanır.
+Yönetici paneli deploy'unda `.htaccess` oluşturulur; böylece hosting klasöründe eski `index.php` kalsa bile admin subdomain önce React `index.html` dosyasını açar.
 
 ---
 
