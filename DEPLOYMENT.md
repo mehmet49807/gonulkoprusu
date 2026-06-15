@@ -5,13 +5,14 @@ Bu proje GitHub'a her `main` push'unda **otomatik olarak FTP ile** yüklenir:
 | Site | Build hedefi | FTP klasörü | Adres |
 | --- | --- | --- | --- |
 | Web sitesi | `VITE_APP_TARGET=public` | `public_html/` | https://www.gonulkoprusu.com |
-| Yönetici paneli | `VITE_APP_TARGET=admin` | FTP kökü (`./`) | https://admin.gonulkoprusu.com |
+| Yönetici paneli | `VITE_APP_TARGET=admin` | `admin.gonulkoprusu.com/` | https://admin.gonulkoprusu.com |
 
 Akış: `.github/workflows/deploy.yml` → frontend'i derler (`client/dist`) → `SamKirkland/FTP-Deploy-Action` ile sunucuya yükler.
 
 Hosting FTP sunucusu FTPS/TLS komutunu desteklemediği için workflow `protocol: ftp` kullanır.
 Yönetici paneli deploy'unda `.htaccess` oluşturulur; böylece hosting klasöründe eski `index.php` kalsa bile admin subdomain önce React `index.html` dosyasını açar.
 Hosting `index.php` dosyasını zorunlu olarak çalıştırırsa diye admin build ayrıca React girişini `index.php` olarak da yükler.
+Eğer canlı `admin.gonulkoprusu.com` hâlâ eski PHP giriş ekranını gösterirse cPanel/Plesk'te subdomain document root ayarı `admin.gonulkoprusu.com/` klasörünü göstermiyor demektir. Document root'u bu klasöre bağlayın.
 
 ---
 
