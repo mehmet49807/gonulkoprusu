@@ -13,9 +13,9 @@ Akış: `.github/workflows/deploy.yml` → frontend'i derler (`client/dist`) →
 
 ## 1) ÖNEMLİ — Güvenlik
 
-- **FTP parolanız sohbet içinde açık metin olarak paylaşıldı. Lütfen hosting panelinden (cPanel/Plesk) FTP parolasını HEMEN değiştirin.**
+- **FTP parolaları sohbet içinde açık metin olarak paylaşıldı. Lütfen hosting panelinden (cPanel/Plesk) bu FTP parolalarını HEMEN değiştirin.**
 - Parola **asla repoya yazılmaz**; yalnızca GitHub Secrets içinde saklanır.
-- Verdiğiniz iki parola farklıydı (`Mhmt498071` ve `Mehmt498071`). Kullanıcı adı aynı olduğundan (`cursor@gonulkoprusu.com`) tek bir parola olması gerekir; biri yazım hatası olabilir. Doğru parolayı tek bir secret olarak girin.
+- Ana site ve yönetici paneli ayrı FTP bilgileriyle çalışacak şekilde ayarlanmıştır. Sunucu veya kullanıcı adı aynı olsa bile parolaları ayrı secret olarak saklayın.
 
 ---
 
@@ -25,12 +25,23 @@ GitHub repo → **Settings → Secrets and variables → Actions**.
 
 ### Secrets (zorunlu)
 
+Ana web sitesi (`/public_html`) için:
+
 | Adı | Değer |
 | --- | --- |
-| `FTP_SERVER` | `ftp.gonulkoprusu.com` |
-| `FTP_USERNAME` | `cursor@gonulkoprusu.com` |
-| `FTP_PASSWORD` | (yeni FTP parolanız) |
-| `FTP_ADMIN_PASSWORD` | (yalnızca admin için **farklı** bir FTP hesabı varsa; aksi halde girmeyin) |
+| `FTP_PUBLIC_SERVER` | FTP sunucusu |
+| `FTP_PUBLIC_USERNAME` | Ana site FTP kullanıcı adı |
+| `FTP_PUBLIC_PASSWORD` | Ana site FTP parolası |
+
+Yönetici paneli (`/admin.gonulkoprusu.com`) için:
+
+| Adı | Değer |
+| --- | --- |
+| `FTP_ADMIN_SERVER` | FTP sunucusu |
+| `FTP_ADMIN_USERNAME` | Yönetici paneli FTP kullanıcı adı |
+| `FTP_ADMIN_PASSWORD` | Yönetici paneli FTP parolası |
+
+> Eski kurulumlarla uyumluluk için workflow hâlâ `FTP_SERVER`, `FTP_USERNAME` ve `FTP_PASSWORD` secret'larını fallback olarak okuyabilir. Yeni kurulumda site bazlı secret adlarını kullanın.
 
 ### Variables (opsiyonel)
 
