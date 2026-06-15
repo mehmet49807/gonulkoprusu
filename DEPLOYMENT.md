@@ -29,16 +29,16 @@ Ana web sitesi (`/public_html`) için:
 
 | Adı | Değer |
 | --- | --- |
-| `FTP_PUBLIC_SERVER` | FTP sunucusu |
-| `FTP_PUBLIC_USERNAME` | Ana site FTP kullanıcı adı |
+| `FTP_PUBLIC_SERVER` | FTP sunucusu (opsiyonel; boşsa `ftp.gonulkoprusu.com`) |
+| `FTP_PUBLIC_USERNAME` | Ana site FTP kullanıcı adı (opsiyonel; boşsa `cursor@gonulkoprusu.com`) |
 | `FTP_PUBLIC_PASSWORD` | Ana site FTP parolası |
 
 Yönetici paneli (`/admin.gonulkoprusu.com`) için:
 
 | Adı | Değer |
 | --- | --- |
-| `FTP_ADMIN_SERVER` | FTP sunucusu |
-| `FTP_ADMIN_USERNAME` | Yönetici paneli FTP kullanıcı adı |
+| `FTP_ADMIN_SERVER` | FTP sunucusu (opsiyonel; boşsa `ftp.gonulkoprusu.com`) |
+| `FTP_ADMIN_USERNAME` | Yönetici paneli FTP kullanıcı adı (opsiyonel; boşsa `cursor@gonulkoprusu.com`) |
 | `FTP_ADMIN_PASSWORD` | Yönetici paneli FTP parolası |
 
 > Eski kurulumlarla uyumluluk için workflow hâlâ `FTP_SERVER`, `FTP_USERNAME` ve `FTP_PASSWORD` secret'larını fallback olarak okuyabilir. Yeni kurulumda site bazlı secret adlarını kullanın.
