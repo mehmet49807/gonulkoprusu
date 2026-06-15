@@ -13,6 +13,7 @@ Hosting FTP sunucusu FTPS/TLS komutunu desteklemediği için workflow `protocol:
 Yönetici paneli deploy'unda `.htaccess` oluşturulur; böylece hosting klasöründe eski `index.php` kalsa bile admin subdomain önce React `index.html` dosyasını açar.
 Hosting `index.php` dosyasını zorunlu olarak çalıştırırsa diye admin build ayrıca React girişini `index.php` olarak da yükler.
 Eğer canlı `admin.gonulkoprusu.com` hâlâ eski PHP giriş ekranını gösterirse cPanel/Plesk'te subdomain document root ayarı `admin.gonulkoprusu.com/` klasörünü göstermiyor demektir. Document root'u bu klasöre bağlayın.
+FTP'ye yüklenen test dosyaları canlı URL'de 404 dönüyorsa verilen FTP hesabı canlı yayın köküne bağlı değildir. Bu durumda hosting panelinden doğru FTP hesabını/yayın klasörünü seçin veya subdomain document root'u FTP'de deploy edilen klasöre yönlendirin.
 
 ---
 
