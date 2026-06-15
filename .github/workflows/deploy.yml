@@ -42,7 +42,7 @@ jobs:
           password: ${{ secrets.FTP_PUBLIC_PASSWORD || secrets.FTP_PASSWORD }}
           protocol: ftp
           local-dir: ./client/dist/
-          server-dir: /public_html/
+          server-dir: public_html/
 
   deploy-admin:
     name: Yönetici paneli -> /admin.gonulkoprusu.com
@@ -87,4 +87,4 @@ jobs:
           password: ${{ secrets.FTP_PUBLIC_PASSWORD || secrets.FTP_ADMIN_PASSWORD || secrets.FTP_PASSWORD }}
           protocol: ftp
           local-dir: ./client/dist/
-          server-dir: /admin.gonulkoprusu.com/
+          server-dir: admin.gonulkoprusu.com/
