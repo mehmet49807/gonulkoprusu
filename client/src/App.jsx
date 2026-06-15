@@ -408,6 +408,7 @@ function AdminAiTools() {
 }
 
 function AdminDashboard({ user }) {
+  const [activeMenu, setActiveMenu] = useState("complaints");
   const [complaints, setComplaints] = useState([]);
   const [drafts, setDrafts] = useState({});
 
@@ -431,53 +432,72 @@ function AdminDashboard({ user }) {
 
   return (
     <div className="admin-stack">
-      <section className="card">
-        <h2>Yönetici Paneli — Tüm Şikayetler</h2>
-        {complaints.length === 0 && <p className="muted">Şikayet yok.</p>}
-        {complaints.map((c) => {
-          const s = STATUS_LABELS[c.status] || STATUS_LABELS.open;
-          return (
-            <div key={c.id} className="row">
-              <div className="row-head">
-                <strong>{c.subject}</strong>
-                <span className={`badge ${s.cls}`}>{s.text}</span>
-              </div>
-              <p className="muted">
-                {c.user_name}: {c.description}
-              </p>
-              {c.status === "open" ? (
-                <div className="resolve-box">
-                  <textarea
-                    rows={2}
-                    placeholder="Sonuç açıklaması (kullanıcıya bildirim olarak gider)"
-                    value={drafts[c.id] || ""}
-                    onChange={(e) =>
-                      setDrafts((d) => ({ ...d, [c.id]: e.target.value }))
-                    }
-                  />
-                  <div className="actions">
-                    <button onClick={() => resolve(c.id, "resolved")}>
-                      Çözüldü olarak bildir
-                    </button>
-                    <button
-                      className="secondary"
-                      onClick={() => resolve(c.id, "rejected")}
-                    >
-                      Reddet
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <p className="resolution">
-                  <strong>Sonuç:</strong> {c.resolution}
-                </p>
-              )}
-            </div>
-          );
-        })}
+      <section className="admin-menu card">
+        <button
+          type="button"
+          className={activeMenu === "complaints" ? "active" : ""}
+          onClick={() => setActiveMenu("complaints")}
+        >
+          Şikayetler
+        </button>
+        <button
+          type="button"
+          className={activeMenu === "ai" ? "active" : ""}
+          onClick={() => setActiveMenu("ai")}
+        >
+          Yapay Zeka Araçları
+        </button>
       </section>
 
-      <AdminAiTools />
+      {activeMenu === "complaints" ? (
+        <section className="card">
+          <h2>Yönetici Paneli — Tüm Şikayetler</h2>
+          {complaints.length === 0 && <p className="muted">Şikayet yok.</p>}
+          {complaints.map((c) => {
+            const s = STATUS_LABELS[c.status] || STATUS_LABELS.open;
+            return (
+              <div key={c.id} className="row">
+                <div className="row-head">
+                  <strong>{c.subject}</strong>
+                  <span className={`badge ${s.cls}`}>{s.text}</span>
+                </div>
+                <p className="muted">
+                  {c.user_name}: {c.description}
+                </p>
+                {c.status === "open" ? (
+                  <div className="resolve-box">
+                    <textarea
+                      rows={2}
+                      placeholder="Sonuç açıklaması (kullanıcıya bildirim olarak gider)"
+                      value={drafts[c.id] || ""}
+                      onChange={(e) =>
+                        setDrafts((d) => ({ ...d, [c.id]: e.target.value }))
+                      }
+                    />
+                    <div className="actions">
+                      <button onClick={() => resolve(c.id, "resolved")}>
+                        Çözüldü olarak bildir
+                      </button>
+                      <button
+                        className="secondary"
+                        onClick={() => resolve(c.id, "rejected")}
+                      >
+                        Reddet
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="resolution">
+                    <strong>Sonuç:</strong> {c.resolution}
+                  </p>
+                )}
+              </div>
+            );
+          })}
+        </section>
+      ) : (
+        <AdminAiTools />
+      )}
     </div>
   );
 }

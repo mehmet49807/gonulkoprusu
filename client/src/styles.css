@@ -208,6 +208,27 @@ button.link {
   gap: 20px;
 }
 
+.admin-menu {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+}
+
+.admin-menu button {
+  flex: 1;
+  margin: 0;
+  background: #f8fafc;
+  color: #0f172a;
+  border: 1px solid #e2e8f0;
+}
+
+.admin-menu button:hover,
+.admin-menu button.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
 .section-heading {
   display: flex;
   justify-content: space-between;
@@ -287,6 +308,12 @@ button.link {
   .editor-layout,
   .field-row {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .admin-menu {
+    flex-direction: column;
   }
 }
 
