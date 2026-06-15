@@ -9,6 +9,8 @@ Bu proje GitHub'a her `main` push'unda **otomatik olarak FTP ile** yüklenir:
 
 Akış: `.github/workflows/deploy.yml` → frontend'i derler (`client/dist`) → `SamKirkland/FTP-Deploy-Action` ile sunucuya yükler.
 
+Hosting FTP sunucusu FTPS/TLS komutunu desteklemediği için workflow `protocol: ftp` kullanır.
+
 ---
 
 ## 1) ÖNEMLİ — Güvenlik

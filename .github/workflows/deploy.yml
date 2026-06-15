@@ -40,7 +40,7 @@ jobs:
           server: ${{ secrets.FTP_PUBLIC_SERVER || secrets.FTP_SERVER || 'ftp.gonulkoprusu.com' }}
           username: ${{ secrets.FTP_PUBLIC_USERNAME || secrets.FTP_USERNAME || 'cursor@gonulkoprusu.com' }}
           password: ${{ secrets.FTP_PUBLIC_PASSWORD || secrets.FTP_PASSWORD }}
-          protocol: ftps
+          protocol: ftp
           local-dir: ./client/dist/
           server-dir: /public_html/
 
@@ -70,6 +70,6 @@ jobs:
           server: ${{ secrets.FTP_ADMIN_SERVER || secrets.FTP_SERVER || 'ftp.gonulkoprusu.com' }}
           username: ${{ secrets.FTP_ADMIN_USERNAME || secrets.FTP_USERNAME || 'cursor@gonulkoprusu.com' }}
           password: ${{ secrets.FTP_ADMIN_PASSWORD || secrets.FTP_PASSWORD }}
-          protocol: ftps
+          protocol: ftp
           local-dir: ./client/dist/
           server-dir: /admin.gonulkoprusu.com/
