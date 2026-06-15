@@ -1,0 +1,284 @@
+:root {
+  --bg: #0f172a;
+  --card: #ffffff;
+  --primary: #2563eb;
+  --primary-d: #1d4ed8;
+  --muted: #64748b;
+  --green: #16a34a;
+  --red: #dc2626;
+  --amber: #d97706;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: linear-gradient(135deg, #eef2ff, #f8fafc);
+  color: #0f172a;
+}
+
+.app {
+  min-height: 100vh;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 24px;
+  background: var(--bg);
+  color: #fff;
+}
+
+.brand {
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.who {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+main {
+  max-width: 980px;
+  margin: 28px auto;
+  padding: 0 20px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 760px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+h1,
+h2,
+h3 {
+  margin-top: 0;
+}
+
+label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 12px 0 6px;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+button {
+  margin-top: 14px;
+  background: var(--primary);
+  color: #fff;
+  border: 0;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--primary-d);
+}
+
+button.secondary {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+button.link {
+  background: none;
+  color: inherit;
+  text-decoration: underline;
+  padding: 0;
+  margin: 0;
+  font-weight: 500;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.hint {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 18px;
+}
+
+.error {
+  color: var(--red);
+}
+
+.success {
+  color: var(--green);
+}
+
+.row {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 14px;
+  margin-top: 14px;
+}
+
+.row-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.badge {
+  font-size: 0.72rem;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.badge-open {
+  background: #fef3c7;
+  color: var(--amber);
+}
+
+.badge-resolved {
+  background: #dcfce7;
+  color: var(--green);
+}
+
+.badge-rejected {
+  background: #fee2e2;
+  color: var(--red);
+}
+
+.resolution {
+  background: #f1f5f9;
+  border-left: 3px solid var(--primary);
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-top: 10px;
+}
+
+.resolve-box {
+  margin-top: 10px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* Auth */
+.auth-card {
+  max-width: 380px;
+  margin: 8vh auto;
+  background: #fff;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.12);
+  text-align: center;
+}
+
+.auth-card form {
+  text-align: left;
+}
+
+.auth-card button {
+  width: 100%;
+}
+
+/* Notification bell */
+.bell {
+  position: relative;
+}
+
+.bell-btn {
+  background: none;
+  font-size: 1.3rem;
+  padding: 0;
+  margin: 0;
+  position: relative;
+}
+
+.bell-btn:hover {
+  background: none;
+}
+
+.bell-count {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background: var(--red);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 1px 6px;
+}
+
+.bell-panel {
+  position: absolute;
+  right: 0;
+  top: 38px;
+  width: 320px;
+  background: #fff;
+  color: #0f172a;
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.2);
+  padding: 16px;
+  z-index: 20;
+  max-height: 60vh;
+  overflow: auto;
+}
+
+.notif {
+  border-top: 1px solid #e2e8f0;
+  padding: 10px 0;
+}
+
+.notif p {
+  margin: 4px 0;
+  font-size: 0.9rem;
+}
+
+.notif-unread {
+  background: #eff6ff;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+code {
+  background: #f1f5f9;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
