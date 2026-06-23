@@ -1,82 +1,32 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { api } from "./api.js";
+import AdminAiChat from "./AdminAiChat.jsx";
 
 // "public" -> gonulkoprusu.com (kullanıcı sitesi)
 // "admin"  -> admin.gonulkoprusu.com (yönetici paneli)
 const APP_TARGET = import.meta.env.VITE_APP_TARGET === "admin" ? "admin" : "public";
+
+function getAdminSection() {
+  const path = window.location.pathname
+    .replace(/\/index\.(html|php)$/, "")
+    .replace(/\/$/, "");
+  if (path === "/ai") return "ai";
+  if (path === "/complaints" || path === "/sikayetler") return "complaints";
+  return "ai";
+}
+
+function navigateAdminSection(section) {
+  const nextPath = section === "complaints" ? "/complaints" : "/ai";
+  if (window.location.pathname !== nextPath) {
+    window.history.pushState({ section }, "", nextPath);
+  }
+}
 
 const STATUS_LABELS = {
   open: { text: "Beklemede", cls: "badge-open" },
   resolved: { text: "Çözüldü", cls: "badge-resolved" },
   rejected: { text: "Reddedildi", cls: "badge-rejected" },
 };
-
-const AI_TOOLS = [
-  {
-    id: "agent",
-    name: "Agent / Composer",
-    summary: "Kod yazdırma ve çok dosyalı değişiklik planı",
-    instruction:
-      "Aşağıdaki hedefe göre üretim kalitesinde kod değişikliği öner. Gerekirse dosya dosya uygulanacak net adımlar ver.",
-  },
-  {
-    id: "ask",
-    name: "Ask",
-    summary: "Kod açıklama ve hızlı soru-cevap",
-    instruction:
-      "Aşağıdaki kodu sade Türkçe ile açıkla. Riskli veya kafa karıştıran bölümleri ayrıca belirt.",
-  },
-  {
-    id: "plan",
-    name: "Plan",
-    summary: "Uygulama planı ve mimari kararlar",
-    instruction:
-      "Bu hedef için uygulanabilir teknik plan hazırla. Etkilenecek dosyaları, sıralamayı ve riskleri belirt.",
-  },
-  {
-    id: "debug",
-    name: "Debug",
-    summary: "Hata nedeni bulma ve çözüm adımları",
-    instruction:
-      "Aşağıdaki kod/hedef için olası hata kaynaklarını analiz et. Kanıt, kök neden ve düzeltme adımlarını yaz.",
-  },
-  {
-    id: "bugbot",
-    name: "Bugbot",
-    summary: "Kod inceleme, regresyon ve eksik test bulma",
-    instruction:
-      "Kod incelemesi yap. Önce gerçek bug, regresyon, güvenlik ve test eksiklerini önem sırasıyla listele.",
-  },
-  {
-    id: "security",
-    name: "Security Review",
-    summary: "Güvenlik açığı ve gizli bilgi kontrolü",
-    instruction:
-      "Güvenlik incelemesi yap. Yetki, gizli bilgi, veri sızıntısı, XSS/CSRF ve dağıtım risklerini kontrol et.",
-  },
-  {
-    id: "tests",
-    name: "Test Generator",
-    summary: "Manuel ve otomatik test senaryoları",
-    instruction:
-      "Bu değişiklik için test planı oluştur. Kritik kullanıcı akışları, edge case'ler ve komutları ekle.",
-  },
-  {
-    id: "pr",
-    name: "PR Writer",
-    summary: "Pull request özeti ve kontrol listesi",
-    instruction:
-      "Bu değişiklik için kısa PR açıklaması yaz. Summary, Testing ve risk notlarını Markdown olarak hazırla.",
-  },
-];
-
-const DEFAULT_CODE_SNIPPET = `// Buraya düzenlemek istediğiniz kodu yapıştırın.
-// Araç seçin, hedefinizi yazın ve Cursor/AI prompt'unu kopyalayın.
-
-function example() {
-  return "Gönül Köprüsü";
-}
-`;
 
 function Login({ onLogin }) {
   const [username, setUsername] = useState("");
@@ -134,7 +84,7 @@ function Login({ onLogin }) {
         {isAdmin ? (
           <>
             Yönetici hesabı ile giriş yapın (örn. <code>admin</code>).
-            Canlı statik panelde yapay zeka araçlarını görmek için{" "}
+            Canlı statik panelde yapay zeka sohbetini görmek için{" "}
             <code>admin</code> yazmanız yeterlidir.
           </>
         ) : (
@@ -274,162 +224,18 @@ function UserDashboard({ user }) {
   );
 }
 
-function AdminAiTools() {
-  const [activeToolId, setActiveToolId] = useState(AI_TOOLS[0].id);
-  const [fileName, setFileName] = useState("client/src/App.jsx");
-  const [language, setLanguage] = useState("jsx");
-  const [goal, setGoal] = useState(
-    "Yönetici panelinde kullanıcıların işini kolaylaştıracak değişikliği uygula."
-  );
-  const [code, setCode] = useState(DEFAULT_CODE_SNIPPET);
-  const [message, setMessage] = useState("");
-
-  const activeTool = useMemo(
-    () => AI_TOOLS.find((tool) => tool.id === activeToolId) || AI_TOOLS[0],
-    [activeToolId]
-  );
-
-  const generatedPrompt = useMemo(
-    () =>
-      [
-        `Araç: ${activeTool.name}`,
-        "",
-        activeTool.instruction,
-        "",
-        `Hedef: ${goal}`,
-        `Dosya: ${fileName || "belirtilmedi"}`,
-        `Dil: ${language || "belirtilmedi"}`,
-        "",
-        "Kod:",
-        "```" + (language || ""),
-        code,
-        "```",
-      ].join("\n"),
-    [activeTool, code, fileName, goal, language]
-  );
-
-  async function copyToClipboard(text, label) {
-    try {
-      await navigator.clipboard.writeText(text);
-      setMessage(`${label} panoya kopyalandı.`);
-    } catch {
-      setMessage("Tarayıcı panoya kopyalamayı engelledi. Metni elle seçip kopyalayın.");
-    }
-  }
-
-  function downloadCode() {
-    const blob = new Blob([code], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = fileName.split("/").pop() || "cursor-code.txt";
-    link.click();
-    URL.revokeObjectURL(url);
-    setMessage("Kod dosyası indirildi.");
-  }
-
-  return (
-    <section className="card ai-tools">
-      <div className="section-heading">
-        <div>
-          <h2>Cursor AI Araçları</h2>
-          <p className="muted">
-            Kod yazma, inceleme, hata ayıklama ve PR hazırlama için hazır
-            Cursor/AI promptları oluşturun.
-          </p>
-        </div>
-        <span className="badge badge-open">Yönetici</span>
-      </div>
-
-      <div className="tool-grid">
-        {AI_TOOLS.map((tool) => (
-          <button
-            key={tool.id}
-            type="button"
-            className={`tool-card ${activeTool.id === tool.id ? "active" : ""}`}
-            onClick={() => setActiveToolId(tool.id)}
-          >
-            <strong>{tool.name}</strong>
-            <span>{tool.summary}</span>
-          </button>
-        ))}
-      </div>
-
-      <div className="editor-layout">
-        <div>
-          <label>Hedef / Talimat</label>
-          <textarea
-            rows={4}
-            value={goal}
-            onChange={(e) => setGoal(e.target.value)}
-          />
-
-          <div className="field-row">
-            <div>
-              <label>Dosya adı</label>
-              <input value={fileName} onChange={(e) => setFileName(e.target.value)} />
-            </div>
-            <div>
-              <label>Dil</label>
-              <select value={language} onChange={(e) => setLanguage(e.target.value)}>
-                <option value="jsx">React / JSX</option>
-                <option value="js">JavaScript</option>
-                <option value="css">CSS</option>
-                <option value="json">JSON</option>
-                <option value="md">Markdown</option>
-                <option value="sql">SQL</option>
-                <option value="">Diğer</option>
-              </select>
-            </div>
-          </div>
-
-          <label>Kod editörü</label>
-          <textarea
-            className="code-editor"
-            rows={14}
-            spellCheck="false"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-          />
-        </div>
-
-        <div>
-          <label>Oluşturulan Cursor/AI promptu</label>
-          <textarea
-            className="prompt-preview"
-            rows={21}
-            readOnly
-            value={generatedPrompt}
-          />
-          <div className="actions wrap">
-            <button
-              type="button"
-              onClick={() => copyToClipboard(generatedPrompt, "Prompt")}
-            >
-              Promptu kopyala
-            </button>
-            <button
-              type="button"
-              className="secondary"
-              onClick={() => copyToClipboard(code, "Kod")}
-            >
-              Kodu kopyala
-            </button>
-            <button type="button" className="secondary" onClick={downloadCode}>
-              Kodu indir
-            </button>
-          </div>
-          {message && <p className="success">{message}</p>}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function AdminDashboard({ user }) {
-  const [activeMenu, setActiveMenu] = useState("ai");
+  const [activeMenu, setActiveMenu] = useState(getAdminSection);
   const [complaints, setComplaints] = useState([]);
   const [drafts, setDrafts] = useState({});
+
+  useEffect(() => {
+    function syncSection() {
+      setActiveMenu(getAdminSection());
+    }
+    window.addEventListener("popstate", syncSection);
+    return () => window.removeEventListener("popstate", syncSection);
+  }, []);
 
   const load = useCallback(async () => {
     try {
@@ -453,13 +259,18 @@ function AdminDashboard({ user }) {
     load();
   }
 
+  function openSection(section) {
+    setActiveMenu(section);
+    navigateAdminSection(section);
+  }
+
   return (
     <div className="admin-stack">
       <section className="admin-menu card">
         <button
           type="button"
           className={activeMenu === "complaints" ? "active" : ""}
-          onClick={() => setActiveMenu("complaints")}
+          onClick={() => openSection("complaints")}
         >
           <span className="menu-icon" aria-hidden="true">
             📋
@@ -469,12 +280,12 @@ function AdminDashboard({ user }) {
         <button
           type="button"
           className={activeMenu === "ai" ? "active" : ""}
-          onClick={() => setActiveMenu("ai")}
+          onClick={() => openSection("ai")}
         >
           <span className="menu-icon" aria-hidden="true">
             🤖
           </span>
-          <span>Yapay Zeka Araçları</span>
+          <span>Yapay Zeka</span>
         </button>
       </section>
 
@@ -525,7 +336,7 @@ function AdminDashboard({ user }) {
           })}
         </section>
       ) : (
-        <AdminAiTools />
+        <AdminAiChat />
       )}
     </div>
   );
