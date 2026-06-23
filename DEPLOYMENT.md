@@ -36,7 +36,7 @@ Ana web sitesi (`/public_html`) için:
 | Adı | Değer |
 | --- | --- |
 | `FTP_PUBLIC_SERVER` | FTP sunucusu (opsiyonel; boşsa `ftp.gonulkoprusu.com`) |
-| `FTP_PUBLIC_USERNAME` | Ana site FTP kullanıcı adı (opsiyonel; boşsa `panel@admin.gonulkoprusu.com`) |
+| `FTP_PUBLIC_USERNAME` | Ana site FTP kullanıcı adı (opsiyonel; boşsa `web@gonulkoprusu.com`) |
 | `FTP_PUBLIC_PASSWORD` | Ana site FTP parolası |
 
 Yönetici paneli (`/admin.gonulkoprusu.com`) için:
@@ -46,6 +46,15 @@ Yönetici paneli (`/admin.gonulkoprusu.com`) için:
 | `FTP_ADMIN_SERVER` | FTP sunucusu (opsiyonel; boşsa `ftp.gonulkoprusu.com`) |
 | `FTP_ADMIN_USERNAME` | Yönetici paneli FTP kullanıcı adı (opsiyonel; boşsa `panel@admin.gonulkoprusu.com`) |
 | `FTP_ADMIN_PASSWORD` | Yönetici paneli FTP parolası |
+
+Hosting tarafındaki tam yollar:
+
+| Site | FTP kullanıcısı | Sunucu klasörü |
+| --- | --- | --- |
+| Web sitesi | `web@gonulkoprusu.com` | `/home/gonulkop/public_html` |
+| Yönetici paneli | `panel@admin.gonulkoprusu.com` | `/home/gonulkop/admin.gonulkoprusu.com` |
+
+Workflow deploy hedefleri sırasıyla `/public_html/` ve `/admin.gonulkoprusu.com/` kullanır; bu yollar FTP hesabının kök dizinine göre eşlenir.
 
 > Eski kurulumlarla uyumluluk için workflow hâlâ `FTP_SERVER`, `FTP_USERNAME` ve `FTP_PASSWORD` secret'larını fallback olarak okuyabilir. Yeni kurulumda site bazlı secret adlarını kullanın.
 > Ana site ve yönetici paneli aynı FTP kullanıcı adını kullanıyorsa hosting tarafında tek geçerli parola olur. Bu durumda `FTP_PASSWORD` secret'ını tek ortak parola olarak girmeniz yeterlidir.
