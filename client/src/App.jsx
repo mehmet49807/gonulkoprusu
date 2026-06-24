@@ -101,37 +101,111 @@ function Login({ onLogin }) {
 
   if (isAdmin) {
     return (
-      <div className="auth-shell auth-shell-admin">
-        <div className="auth-card auth-card-admin">
-          <h1>Yönetici Girişi</h1>
-          <p className="muted auth-subtitle">
-            Yalnızca yetkili yönetici hesapları giriş yapabilir.
-          </p>
-          <form className="admin-login-form" onSubmit={submit}>
-            <label>Kullanıcı adı veya e-posta</label>
-            <input
-              autoFocus
-              value={identifier}
-              onChange={(e) => setIdentifier(e.target.value)}
-              placeholder="admin"
-              required
-            />
-            <label>Şifre</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              required
-            />
-            <button type="submit" className="admin-gradient-btn">
-              Panele Giriş
-            </button>
-          </form>
-          {error && <p className="error">{error}</p>}
-          <a className="back-link" href="https://gonulkoprusu.com">
-            ← Ana siteye dön
-          </a>
+      <div className="admin-login-body">
+        <div className="admin-login-shell">
+          <aside className="admin-login-visual">
+            <div className="admin-login-visual-glow" aria-hidden="true" />
+            <div className="admin-login-visual-glow admin-login-visual-glow--2" aria-hidden="true" />
+            <a href="https://www.gonulkoprusu.com" className="admin-login-brand">
+              <div className="admin-login-brand-icon">GK</div>
+              <span>
+                <strong>Gönül Köprüsü</strong>
+                <small>Yönetim Paneli</small>
+              </span>
+            </a>
+            <h1 className="admin-login-headline">
+              Güvenli<br />yönetim alanı
+            </h1>
+            <p className="admin-login-desc">
+              Platform moderasyonu, kullanıcı yönetimi ve duyurular için yetkili giriş noktası.
+            </p>
+            <ul className="admin-login-features">
+              <li>
+                <span className="admin-feature-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </span>
+                KVKK uyumlu veri yönetimi
+              </li>
+              <li>
+                <span className="admin-feature-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </span>
+                Kullanıcı & şikayet denetimi
+              </li>
+              <li>
+                <span className="admin-feature-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </span>
+                Toplu duyuru sistemi
+              </li>
+              <li>
+                <span className="admin-feature-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                </span>
+                Premium üyelik takibi
+              </li>
+            </ul>
+            <div className="admin-login-visual-footer">
+              <span>&copy; {new Date().getFullYear()} Gönül Köprüsü</span>
+            </div>
+          </aside>
+
+          <section className="admin-login-panel">
+            <div className="admin-login-card">
+              <div className="admin-login-card-badge">Yetkili Erişim</div>
+              <h2 className="admin-login-title">Yönetici Girişi</h2>
+              <p className="admin-login-subtitle">
+                Yalnızca yetkili yönetici hesapları giriş yapabilir.
+              </p>
+
+              {error && (
+                <div className="admin-login-error">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                  {error}
+                </div>
+              )}
+
+              <form className="admin-login-form" onSubmit={submit}>
+                <div className="admin-form-group">
+                  <label htmlFor="admin-login">Kullanıcı adı veya e-posta</label>
+                  <div className="admin-input-wrap">
+                    <svg className="admin-input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <input
+                      id="admin-login"
+                      autoFocus
+                      value={identifier}
+                      onChange={(e) => setIdentifier(e.target.value)}
+                      placeholder="admin"
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="admin-form-group">
+                  <label htmlFor="admin-password">Şifre</label>
+                  <div className="admin-input-wrap">
+                    <svg className="admin-input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    <input
+                      id="admin-password"
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      required
+                    />
+                  </div>
+                </div>
+                <button type="submit" className="admin-gradient-btn">
+                  <span>Panele Giriş</span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </button>
+              </form>
+
+              <a className="admin-login-back" href="https://www.gonulkoprusu.com">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                Ana siteye dön
+              </a>
+            </div>
+          </section>
         </div>
       </div>
     );
