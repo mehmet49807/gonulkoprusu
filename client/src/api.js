@@ -45,4 +45,19 @@ export const api = {
       method: "POST",
       body: JSON.stringify(payload),
     }),
+  // AI moderation
+  aiScan: (payload) =>
+    request("/admin/ai/scan", { method: "POST", body: JSON.stringify(payload) }),
+  aiScanAll: (payload) =>
+    request("/admin/ai/scan-all", { method: "POST", body: JSON.stringify(payload) }),
+  getAiLogs: (adminId) => request(`/admin/ai/logs?adminId=${adminId}`),
+  getAiWarnings: (adminId) => request(`/admin/ai/warnings?adminId=${adminId}`),
+  getAiReport: (adminId) => request(`/admin/ai/report?adminId=${adminId}`),
+  // User gender / verified
+  setUserGender: (id, payload) =>
+    request(`/admin/users/${id}/gender`, { method: "POST", body: JSON.stringify(payload) }),
+  setUserVerified: (id, payload) =>
+    request(`/admin/users/${id}/verify`, { method: "POST", body: JSON.stringify(payload) }),
+  // Rules
+  getRules: () => request("/rules"),
 };
