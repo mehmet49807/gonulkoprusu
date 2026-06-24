@@ -79,20 +79,32 @@ function example() {
 `;
 
 function Login({ onLogin }) {
-  const [username, setUsername] = useState("");
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const isAdmin = APP_TARGET === "admin";
 
   function staticAdminUser() {
-    if (!isAdmin || username.trim().toLowerCase() !== "admin") return null;
+    if (!isAdmin) return null;
+    const login = identifier.trim().toLowerCase();
+    if (login !== "admin" && login !== "admin@gonulkoprusu.com") return null;
     return { id: 1, username: "admin", name: "Yönetici", role: "admin" };
   }
 
   async function submit(e) {
     e.preventDefault();
     setError("");
+    const login = identifier.trim();
+    if (!login) {
+      setError("Kullanıcı adı veya e-posta zorunludur.");
+      return;
+    }
+    if (isAdmin && !password.trim()) {
+      setError("Şifre zorunludur.");
+      return;
+    }
     try {
-      const user = await api.login(username);
+      const user = await api.login(login);
       if (isAdmin && user?.role !== "admin") {
         const fallbackUser = staticAdminUser();
         if (fallbackUser) {
@@ -111,38 +123,66 @@ function Login({ onLogin }) {
     }
   }
 
+  if (isAdmin) {
+    return (
+      <div className="auth-shell auth-shell-admin">
+        <div className="auth-card auth-card-admin">
+          <h1>Yönetici Girişi</h1>
+          <p className="muted auth-subtitle">
+            Yalnızca yetkili yönetici hesapları giriş yapabilir.
+          </p>
+          <form className="admin-login-form" onSubmit={submit}>
+            <label>Kullanıcı adı veya e-posta</label>
+            <input
+              autoFocus
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
+              placeholder="admin"
+              required
+            />
+            <label>Şifre</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              required
+            />
+            <button type="submit" className="admin-gradient-btn">
+              Panele Giriş
+            </button>
+          </form>
+          {error && <p className="error">{error}</p>}
+          <a className="back-link" href="https://gonulkoprusu.com">
+            ← Ana siteye dön
+          </a>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="auth-card">
-      <h1>Gönül Köprüsü{isAdmin ? " — Yönetici" : ""}</h1>
-      <p className="muted">
-        {isAdmin
-          ? "Yönetici paneli girişi"
-          : "Topluluk yardımlaşma ve şikayet platformu"}
-      </p>
-      <form onSubmit={submit}>
-        <label>Kullanıcı adı</label>
-        <input
-          autoFocus
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder={isAdmin ? "admin" : "ayse, mehmet veya admin"}
-        />
-        <button type="submit">Giriş yap</button>
-      </form>
-      {error && <p className="error">{error}</p>}
-      <p className="hint">
-        {isAdmin ? (
-          <>
-            Yönetici hesabı ile giriş yapın (örn. <code>admin</code>).
-            Canlı statik panelde yapay zeka araçlarını görmek için{" "}
-            <code>admin</code> yazmanız yeterlidir.
-          </>
-        ) : (
-          <>
-            Demo kullanıcıları: <code>ayse</code>, <code>mehmet</code> (kullanıcı)
-          </>
-        )}
-      </p>
+    <div className="auth-shell">
+      <div className="auth-card">
+        <h1>Gönül Köprüsü</h1>
+        <p className="muted">
+          Topluluk yardımlaşma ve şikayet platformu
+        </p>
+        <form onSubmit={submit}>
+          <label>Kullanıcı adı</label>
+          <input
+            autoFocus
+            value={identifier}
+            onChange={(e) => setIdentifier(e.target.value)}
+            placeholder="ayse, mehmet veya admin"
+          />
+          <button type="submit">Giriş yap</button>
+        </form>
+        {error && <p className="error">{error}</p>}
+        <p className="hint">
+          Demo kullanıcıları: <code>ayse</code>, <code>mehmet</code> (kullanıcı)
+        </p>
+      </div>
     </div>
   );
 }
