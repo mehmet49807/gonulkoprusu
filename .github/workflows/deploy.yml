@@ -45,7 +45,7 @@ jobs:
           server-dir: /public_html/
 
   deploy-admin:
-    name: Yönetici paneli -> FTP kök (/)
+    name: Yönetici paneli -> /admin.gonulkoprusu.com
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -88,4 +88,4 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD || secrets.FTP_ADMIN_PASSWORD || secrets.FTP_PUBLIC_PASSWORD }}
           protocol: ftp
           local-dir: ./client/dist/
-          server-dir: /
+          server-dir: /admin.gonulkoprusu.com/
