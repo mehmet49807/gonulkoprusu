@@ -29,4 +29,20 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ userId }),
     }),
+  getAdminUsers: (adminId) => request(`/admin/users?adminId=${adminId}`),
+  setUserPremium: (id, payload) =>
+    request(`/admin/users/${id}/premium`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  deleteUser: (id, adminId) =>
+    request(`/admin/users/${id}?adminId=${adminId}`, { method: "DELETE" }),
+  getPremiumUsers: (adminId) => request(`/admin/premium-users?adminId=${adminId}`),
+  getAdminMessages: (adminId, status = "all") =>
+    request(`/admin/messages?adminId=${adminId}&status=${status}`),
+  moderateMessage: (id, payload) =>
+    request(`/admin/messages/${id}/moderate`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
 };

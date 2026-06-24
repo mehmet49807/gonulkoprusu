@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { api } from "./api.js";
 
 // "public" -> gonulkoprusu.com (kullanıcı sitesi)
@@ -11,72 +11,38 @@ const STATUS_LABELS = {
   rejected: { text: "Reddedildi", cls: "badge-rejected" },
 };
 
-const AI_TOOLS = [
-  {
-    id: "agent",
-    name: "Agent / Composer",
-    summary: "Kod yazdırma ve çok dosyalı değişiklik planı",
-    instruction:
-      "Aşağıdaki hedefe göre üretim kalitesinde kod değişikliği öner. Gerekirse dosya dosya uygulanacak net adımlar ver.",
-  },
-  {
-    id: "ask",
-    name: "Ask",
-    summary: "Kod açıklama ve hızlı soru-cevap",
-    instruction:
-      "Aşağıdaki kodu sade Türkçe ile açıkla. Riskli veya kafa karıştıran bölümleri ayrıca belirt.",
-  },
-  {
-    id: "plan",
-    name: "Plan",
-    summary: "Uygulama planı ve mimari kararlar",
-    instruction:
-      "Bu hedef için uygulanabilir teknik plan hazırla. Etkilenecek dosyaları, sıralamayı ve riskleri belirt.",
-  },
-  {
-    id: "debug",
-    name: "Debug",
-    summary: "Hata nedeni bulma ve çözüm adımları",
-    instruction:
-      "Aşağıdaki kod/hedef için olası hata kaynaklarını analiz et. Kanıt, kök neden ve düzeltme adımlarını yaz.",
-  },
-  {
-    id: "bugbot",
-    name: "Bugbot",
-    summary: "Kod inceleme, regresyon ve eksik test bulma",
-    instruction:
-      "Kod incelemesi yap. Önce gerçek bug, regresyon, güvenlik ve test eksiklerini önem sırasıyla listele.",
-  },
-  {
-    id: "security",
-    name: "Security Review",
-    summary: "Güvenlik açığı ve gizli bilgi kontrolü",
-    instruction:
-      "Güvenlik incelemesi yap. Yetki, gizli bilgi, veri sızıntısı, XSS/CSRF ve dağıtım risklerini kontrol et.",
-  },
-  {
-    id: "tests",
-    name: "Test Generator",
-    summary: "Manuel ve otomatik test senaryoları",
-    instruction:
-      "Bu değişiklik için test planı oluştur. Kritik kullanıcı akışları, edge case'ler ve komutları ekle.",
-  },
-  {
-    id: "pr",
-    name: "PR Writer",
-    summary: "Pull request özeti ve kontrol listesi",
-    instruction:
-      "Bu değişiklik için kısa PR açıklaması yaz. Summary, Testing ve risk notlarını Markdown olarak hazırla.",
-  },
-];
+const PREMIUM_LABELS = {
+  none: "Standart",
+  pro: "Pro",
+  gold: "Gold",
+  platinum: "Platinum",
+};
 
-const DEFAULT_CODE_SNIPPET = `// Buraya düzenlemek istediğiniz kodu yapıştırın.
-// Araç seçin, hedefinizi yazın ve Cursor/AI prompt'unu kopyalayın.
+const MESSAGE_STATUS_LABELS = {
+  pending: "Beklemede",
+  approved: "Onaylandı",
+  hidden: "Gizlendi",
+};
 
-function example() {
-  return "Gönül Köprüsü";
+function formatDate(value) {
+  if (!value) return "-";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleString("tr-TR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
 }
-`;
+
+function profileImage(user) {
+  return (
+    user.avatar_url ||
+    `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(
+      user.username || user.name || "user"
+    )}`
+  );
+}
 
 function Login({ onLogin }) {
   const [identifier, setIdentifier] = useState("");
@@ -84,10 +50,19 @@ function Login({ onLogin }) {
   const [error, setError] = useState("");
   const isAdmin = APP_TARGET === "admin";
 
+  const STATIC_ADMIN_CREDENTIALS = [
+    { login: "admin", password: "mehmet49800" },
+    { login: "mehmet49800@gmail.com", password: "mehmet49800" },
+  ];
+
   function staticAdminUser() {
     if (!isAdmin) return null;
     const login = identifier.trim().toLowerCase();
-    if (login !== "admin" && login !== "admin@gonulkoprusu.com") return null;
+    const pass = password.trim();
+    const matched = STATIC_ADMIN_CREDENTIALS.some(
+      (cred) => cred.login === login && cred.password === pass
+    );
+    if (!matched) return null;
     return { id: 1, username: "admin", name: "Yönetici", role: "admin" };
   }
 
@@ -103,23 +78,24 @@ function Login({ onLogin }) {
       setError("Şifre zorunludur.");
       return;
     }
+    const fallbackUser = staticAdminUser();
+    if (fallbackUser) {
+      onLogin(fallbackUser);
+      return;
+    }
     try {
       const user = await api.login(login);
       if (isAdmin && user?.role !== "admin") {
-        const fallbackUser = staticAdminUser();
-        if (fallbackUser) {
-          onLogin(fallbackUser);
-          return;
-        }
+        setError("Yönetici girişi başarısız. Bilgilerinizi kontrol edin.");
+        return;
       }
       onLogin(user);
     } catch (err) {
-      const fallbackUser = staticAdminUser();
-      if (fallbackUser) {
-        onLogin(fallbackUser);
-        return;
-      }
-      setError(err.message);
+      setError(
+        isAdmin
+          ? "Yönetici girişi başarısız. Bilgilerinizi kontrol edin."
+          : err.message
+      );
     }
   }
 
@@ -314,164 +290,274 @@ function UserDashboard({ user }) {
   );
 }
 
-function AdminAiTools() {
-  const [activeToolId, setActiveToolId] = useState(AI_TOOLS[0].id);
-  const [fileName, setFileName] = useState("client/src/App.jsx");
-  const [language, setLanguage] = useState("jsx");
-  const [goal, setGoal] = useState(
-    "Yönetici panelinde kullanıcıların işini kolaylaştıracak değişikliği uygula."
-  );
-  const [code, setCode] = useState(DEFAULT_CODE_SNIPPET);
+function AdminUserManagement({ adminUser }) {
+  const [users, setUsers] = useState([]);
+  const [premiumDrafts, setPremiumDrafts] = useState({});
+  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
-  const activeTool = useMemo(
-    () => AI_TOOLS.find((tool) => tool.id === activeToolId) || AI_TOOLS[0],
-    [activeToolId]
-  );
-
-  const generatedPrompt = useMemo(
-    () =>
-      [
-        `Araç: ${activeTool.name}`,
-        "",
-        activeTool.instruction,
-        "",
-        `Hedef: ${goal}`,
-        `Dosya: ${fileName || "belirtilmedi"}`,
-        `Dil: ${language || "belirtilmedi"}`,
-        "",
-        "Kod:",
-        "```" + (language || ""),
-        code,
-        "```",
-      ].join("\n"),
-    [activeTool, code, fileName, goal, language]
-  );
-
-  async function copyToClipboard(text, label) {
+  const loadUsers = useCallback(async () => {
+    setLoading(true);
+    setError("");
     try {
-      await navigator.clipboard.writeText(text);
-      setMessage(`${label} panoya kopyalandı.`);
-    } catch {
-      setMessage("Tarayıcı panoya kopyalamayı engelledi. Metni elle seçip kopyalayın.");
+      const rows = await api.getAdminUsers(adminUser.id);
+      setUsers(rows);
+      setPremiumDrafts(
+        Object.fromEntries(rows.map((row) => [row.id, row.premium_plan || "none"]))
+      );
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
+  }, [adminUser.id]);
+
+  useEffect(() => {
+    loadUsers();
+  }, [loadUsers]);
+
+  async function applyPremium(userId) {
+    const plan = premiumDrafts[userId] || "none";
+    await api.setUserPremium(userId, { adminId: adminUser.id, plan });
+    setMessage(
+      plan === "none"
+        ? "Premium üyelik kaldırıldı."
+        : `${PREMIUM_LABELS[plan]} üyelik atandı.`
+    );
+    loadUsers();
   }
 
-  function downloadCode() {
-    const blob = new Blob([code], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = fileName.split("/").pop() || "cursor-code.txt";
-    link.click();
-    URL.revokeObjectURL(url);
-    setMessage("Kod dosyası indirildi.");
+  async function removeUser(userItem) {
+    const ok = window.confirm(
+      `${userItem.name} kullanıcısı silinsin mi? Bu işlem geri alınamaz.`
+    );
+    if (!ok) return;
+    await api.deleteUser(userItem.id, adminUser.id);
+    setMessage("Kullanıcı silindi.");
+    loadUsers();
   }
 
   return (
-    <section className="card ai-tools">
+    <section className="card admin-page">
       <div className="section-heading">
         <div>
-          <h2>Cursor AI Araçları</h2>
+          <h2>Kullanıcı Yönetimi</h2>
           <p className="muted">
-            Kod yazma, inceleme, hata ayıklama ve PR hazırlama için hazır
-            Cursor/AI promptları oluşturun.
+            Profilleri görüntüleyin, premium atayın ve gerekli kullanıcı ayarlarını
+            yönetin.
           </p>
         </div>
-        <span className="badge badge-open">Yönetici</span>
       </div>
-
-      <div className="tool-grid">
-        {AI_TOOLS.map((tool) => (
-          <button
-            key={tool.id}
-            type="button"
-            className={`tool-card ${activeTool.id === tool.id ? "active" : ""}`}
-            onClick={() => setActiveToolId(tool.id)}
-          >
-            <strong>{tool.name}</strong>
-            <span>{tool.summary}</span>
-          </button>
+      {message && <p className="success">{message}</p>}
+      {error && <p className="error">{error}</p>}
+      {loading && <p className="muted">Kullanıcılar yükleniyor…</p>}
+      <div className="admin-list">
+        {users.map((item) => (
+          <article key={item.id} className="admin-entity-card">
+            <img src={profileImage(item)} alt={item.name} className="profile-thumb" />
+            <div className="admin-entity-main">
+              <div className="row-head">
+                <strong>{item.name}</strong>
+                <span className={`badge ${item.role === "admin" ? "badge-open" : "badge-resolved"}`}>
+                  {item.role === "admin" ? "Yönetici" : "Kullanıcı"}
+                </span>
+              </div>
+              <p className="muted">
+                @{item.username} · {item.email || "-"}
+              </p>
+              <p className="muted">
+                Şikayet sayısı: {item.complaint_count} · Premium:{" "}
+                <strong>{PREMIUM_LABELS[item.premium_plan] || "Standart"}</strong>
+              </p>
+            </div>
+            {item.role !== "admin" && (
+              <div className="admin-entity-actions">
+                <select
+                  value={premiumDrafts[item.id] || "none"}
+                  onChange={(e) =>
+                    setPremiumDrafts((prev) => ({
+                      ...prev,
+                      [item.id]: e.target.value,
+                    }))
+                  }
+                >
+                  <option value="none">Standart</option>
+                  <option value="pro">Pro</option>
+                  <option value="gold">Gold</option>
+                  <option value="platinum">Platinum</option>
+                </select>
+                <button type="button" onClick={() => applyPremium(item.id)}>
+                  Premium uygula
+                </button>
+                <button
+                  type="button"
+                  className="secondary danger"
+                  onClick={() => removeUser(item)}
+                >
+                  Kullanıcıyı sil
+                </button>
+              </div>
+            )}
+          </article>
         ))}
       </div>
+    </section>
+  );
+}
 
-      <div className="editor-layout">
-        <div>
-          <label>Hedef / Talimat</label>
-          <textarea
-            rows={4}
-            value={goal}
-            onChange={(e) => setGoal(e.target.value)}
-          />
+function AdminPremiumTracking({ adminUser }) {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-          <div className="field-row">
-            <div>
-              <label>Dosya adı</label>
-              <input value={fileName} onChange={(e) => setFileName(e.target.value)} />
+  const loadPremium = useCallback(async () => {
+    setLoading(true);
+    setError("");
+    try {
+      setUsers(await api.getPremiumUsers(adminUser.id));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [adminUser.id]);
+
+  useEffect(() => {
+    loadPremium();
+  }, [loadPremium]);
+
+  return (
+    <section className="card admin-page">
+      <h2>Premium Takip</h2>
+      <p className="muted">
+        Premium üyeleri ve üyelik bitiş tarihlerini bu alandan izleyin.
+      </p>
+      {error && <p className="error">{error}</p>}
+      {loading && <p className="muted">Premium kullanıcılar yükleniyor…</p>}
+      {users.length === 0 && !loading && (
+        <p className="muted">Aktif premium kullanıcı yok.</p>
+      )}
+      <div className="admin-list">
+        {users.map((item) => (
+          <article key={item.id} className="admin-entity-card">
+            <img src={profileImage(item)} alt={item.name} className="profile-thumb" />
+            <div className="admin-entity-main">
+              <div className="row-head">
+                <strong>{item.name}</strong>
+                <span className="badge badge-resolved">
+                  {PREMIUM_LABELS[item.premium_plan] || "Premium"}
+                </span>
+              </div>
+              <p className="muted">
+                @{item.username} · {item.email || "-"}
+              </p>
+              <p className="muted">
+                Bitiş tarihi: <strong>{formatDate(item.premium_until)}</strong>
+              </p>
             </div>
-            <div>
-              <label>Dil</label>
-              <select value={language} onChange={(e) => setLanguage(e.target.value)}>
-                <option value="jsx">React / JSX</option>
-                <option value="js">JavaScript</option>
-                <option value="css">CSS</option>
-                <option value="json">JSON</option>
-                <option value="md">Markdown</option>
-                <option value="sql">SQL</option>
-                <option value="">Diğer</option>
-              </select>
-            </div>
-          </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
 
-          <label>Kod editörü</label>
-          <textarea
-            className="code-editor"
-            rows={14}
-            spellCheck="false"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-          />
-        </div>
+function AdminMessageModeration({ adminUser }) {
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
+  const loadMessages = useCallback(async () => {
+    setLoading(true);
+    setError("");
+    try {
+      setMessages(await api.getAdminMessages(adminUser.id, statusFilter));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [adminUser.id, statusFilter]);
+
+  useEffect(() => {
+    loadMessages();
+  }, [loadMessages]);
+
+  async function moderate(id, action) {
+    await api.moderateMessage(id, { adminId: adminUser.id, action });
+    loadMessages();
+  }
+
+  return (
+    <section className="card admin-page">
+      <div className="section-heading">
         <div>
-          <label>Oluşturulan Cursor/AI promptu</label>
-          <textarea
-            className="prompt-preview"
-            rows={21}
-            readOnly
-            value={generatedPrompt}
-          />
-          <div className="actions wrap">
-            <button
-              type="button"
-              onClick={() => copyToClipboard(generatedPrompt, "Prompt")}
-            >
-              Promptu kopyala
-            </button>
-            <button
-              type="button"
-              className="secondary"
-              onClick={() => copyToClipboard(code, "Kod")}
-            >
-              Kodu kopyala
-            </button>
-            <button type="button" className="secondary" onClick={downloadCode}>
-              Kodu indir
-            </button>
-          </div>
-          {message && <p className="success">{message}</p>}
+          <h2>Mesaj Denetimi</h2>
+          <p className="muted">Kullanıcı mesajlarını onaylayın veya gizleyin.</p>
         </div>
+        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+          <option value="all">Tümü</option>
+          <option value="pending">Beklemede</option>
+          <option value="approved">Onaylı</option>
+          <option value="hidden">Gizli</option>
+        </select>
+      </div>
+      {error && <p className="error">{error}</p>}
+      {loading && <p className="muted">Mesajlar yükleniyor…</p>}
+      <div className="admin-list">
+        {messages.map((item) => (
+          <article key={item.id} className="admin-entity-card">
+            <img
+              src={profileImage(item)}
+              alt={item.user_name}
+              className="profile-thumb"
+            />
+            <div className="admin-entity-main">
+              <div className="row-head">
+                <strong>{item.user_name}</strong>
+                <span className="badge badge-open">
+                  {MESSAGE_STATUS_LABELS[item.status] || item.status}
+                </span>
+              </div>
+              <p className="muted">
+                @{item.username} · {formatDate(item.created_at)}
+              </p>
+              <p>{item.content}</p>
+            </div>
+            <div className="admin-entity-actions">
+              <button type="button" onClick={() => moderate(item.id, "approve")}>
+                Onayla
+              </button>
+              <button
+                type="button"
+                className="secondary"
+                onClick={() => moderate(item.id, "pending")}
+              >
+                Beklemeye al
+              </button>
+              <button
+                type="button"
+                className="secondary danger"
+                onClick={() => moderate(item.id, "hide")}
+              >
+                Gizle
+              </button>
+            </div>
+          </article>
+        ))}
       </div>
     </section>
   );
 }
 
 function AdminDashboard({ user }) {
-  const [activeMenu, setActiveMenu] = useState("ai");
+  const [activeMenu, setActiveMenu] = useState("users");
   const [complaints, setComplaints] = useState([]);
   const [drafts, setDrafts] = useState({});
 
-  const load = useCallback(async () => {
+  const loadComplaints = useCallback(async () => {
     try {
       setComplaints(await api.getComplaints(user.id));
     } catch {
@@ -480,22 +566,52 @@ function AdminDashboard({ user }) {
   }, [user.id]);
 
   useEffect(() => {
-    load();
-    const t = setInterval(load, 4000);
+    loadComplaints();
+    const t = setInterval(loadComplaints, 4000);
     return () => clearInterval(t);
-  }, [load]);
+  }, [loadComplaints]);
 
   async function resolve(id, status) {
     const resolution = drafts[id];
     if (!resolution) return;
     await api.resolveComplaint(id, { adminId: user.id, status, resolution });
     setDrafts((d) => ({ ...d, [id]: "" }));
-    load();
+    loadComplaints();
   }
 
   return (
     <div className="admin-stack">
       <section className="admin-menu card">
+        <button
+          type="button"
+          className={activeMenu === "users" ? "active" : ""}
+          onClick={() => setActiveMenu("users")}
+        >
+          <span className="menu-icon" aria-hidden="true">
+            👥
+          </span>
+          <span>Kullanıcı Yönetimi</span>
+        </button>
+        <button
+          type="button"
+          className={activeMenu === "premium" ? "active" : ""}
+          onClick={() => setActiveMenu("premium")}
+        >
+          <span className="menu-icon" aria-hidden="true">
+            ⭐
+          </span>
+          <span>Premium Takip</span>
+        </button>
+        <button
+          type="button"
+          className={activeMenu === "messages" ? "active" : ""}
+          onClick={() => setActiveMenu("messages")}
+        >
+          <span className="menu-icon" aria-hidden="true">
+            💬
+          </span>
+          <span>Mesaj Denetimi</span>
+        </button>
         <button
           type="button"
           className={activeMenu === "complaints" ? "active" : ""}
@@ -506,19 +622,15 @@ function AdminDashboard({ user }) {
           </span>
           <span>Şikayetler</span>
         </button>
-        <button
-          type="button"
-          className={activeMenu === "ai" ? "active" : ""}
-          onClick={() => setActiveMenu("ai")}
-        >
-          <span className="menu-icon" aria-hidden="true">
-            🤖
-          </span>
-          <span>Yapay Zeka Araçları</span>
-        </button>
       </section>
 
-      {activeMenu === "complaints" ? (
+      {activeMenu === "users" ? (
+        <AdminUserManagement adminUser={user} />
+      ) : activeMenu === "premium" ? (
+        <AdminPremiumTracking adminUser={user} />
+      ) : activeMenu === "messages" ? (
+        <AdminMessageModeration adminUser={user} />
+      ) : (
         <section className="card">
           <h2>Yönetici Paneli — Tüm Şikayetler</h2>
           {complaints.length === 0 && <p className="muted">Şikayet yok.</p>}
@@ -564,8 +676,6 @@ function AdminDashboard({ user }) {
             );
           })}
         </section>
-      ) : (
-        <AdminAiTools />
       )}
     </div>
   );

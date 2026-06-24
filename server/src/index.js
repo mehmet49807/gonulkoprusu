@@ -9,22 +9,207 @@ app.use(express.json());
 const PORT = process.env.PORT || 4000;
 
 function getUserById(id) {
-  return db.prepare("SELECT id, username, name, role FROM users WHERE id = ?").get(id);
+  return db
+    .prepare(
+      `SELECT id, username, name, role, email, avatar_url, premium_plan, premium_until
+       FROM users WHERE id = ?`
+    )
+    .get(id);
+}
+
+function requireAdmin(res, adminId) {
+  const admin = getUserById(Number(adminId));
+  if (!admin || admin.role !== "admin") {
+    res.status(403).json({ error: "Yönetici yetkisi gerekli" });
+    return null;
+  }
+  return admin;
 }
 
 app.get("/api/health", (_req, res) => {
   res.json({ ok: true });
 });
 
-// Basit giriş: kullanıcı adı ile (demo amaçlı, parola yok)
+// Basit giriş: kullanıcı adı veya e-posta ile (demo amaçlı, parola yok)
 app.post("/api/login", (req, res) => {
   const { username } = req.body || {};
-  if (!username) return res.status(400).json({ error: "username gerekli" });
+  const login = String(username || "").trim().toLowerCase();
+  if (!login) return res.status(400).json({ error: "username gerekli" });
   const user = db
-    .prepare("SELECT id, username, name, role FROM users WHERE username = ?")
-    .get(String(username).trim().toLowerCase());
+    .prepare(
+      `SELECT id, username, name, role, email, avatar_url, premium_plan, premium_until
+       FROM users
+       WHERE lower(username) = ? OR lower(email) = ?`
+    )
+    .get(login, login);
   if (!user) return res.status(404).json({ error: "Kullanıcı bulunamadı" });
   res.json(user);
+});
+
+// Admin - kullanıcı yönetimi listesi
+app.get("/api/admin/users", (req, res) => {
+  const admin = requireAdmin(res, req.query.adminId);
+  if (!admin) return;
+
+  const rows = db
+    .prepare(
+      `SELECT
+         u.id,
+         u.username,
+         u.name,
+         u.role,
+         u.email,
+         u.avatar_url,
+         u.premium_plan,
+         u.premium_until,
+         COUNT(c.id) AS complaint_count
+       FROM users u
+       LEFT JOIN complaints c ON c.user_id = u.id
+       GROUP BY u.id
+       ORDER BY CASE WHEN u.role = 'admin' THEN 0 ELSE 1 END, u.name ASC`
+    )
+    .all();
+
+  res.json(rows);
+});
+
+// Admin - premium atama/güncelleme
+app.post("/api/admin/users/:id/premium", (req, res) => {
+  const admin = requireAdmin(res, req.body?.adminId);
+  if (!admin) return;
+
+  const targetId = Number(req.params.id);
+  const target = getUserById(targetId);
+  if (!target) return res.status(404).json({ error: "Kullanıcı bulunamadı" });
+  if (target.role === "admin") {
+    return res.status(400).json({ error: "Yönetici hesabına premium atanamaz" });
+  }
+
+  const allowedPlans = new Set(["none", "pro", "gold", "platinum"]);
+  const plan = String(req.body?.plan || "none").toLowerCase();
+  if (!allowedPlans.has(plan)) {
+    return res.status(400).json({ error: "Geçersiz premium planı" });
+  }
+
+  const until = req.body?.until ? String(req.body.until) : null;
+  const premiumUntil = plan === "none" ? null : until || "2026-12-31";
+
+  db.prepare(
+    "UPDATE users SET premium_plan = ?, premium_until = ? WHERE id = ?"
+  ).run(plan, premiumUntil, targetId);
+
+  res.json(getUserById(targetId));
+});
+
+// Admin - kullanıcı silme
+app.delete("/api/admin/users/:id", (req, res) => {
+  const admin = requireAdmin(res, req.query.adminId);
+  if (!admin) return;
+
+  const targetId = Number(req.params.id);
+  const target = getUserById(targetId);
+  if (!target) return res.status(404).json({ error: "Kullanıcı bulunamadı" });
+  if (target.role === "admin") {
+    return res.status(400).json({ error: "Yönetici hesabı silinemez" });
+  }
+
+  const tx = db.transaction(() => {
+    const complaintIds = db
+      .prepare("SELECT id FROM complaints WHERE user_id = ?")
+      .all(targetId)
+      .map((row) => row.id);
+
+    if (complaintIds.length > 0) {
+      const placeholders = complaintIds.map(() => "?").join(",");
+      db.prepare(
+        `DELETE FROM notifications WHERE complaint_id IN (${placeholders})`
+      ).run(...complaintIds);
+    }
+
+    db.prepare("DELETE FROM notifications WHERE user_id = ?").run(targetId);
+    db.prepare("DELETE FROM complaints WHERE user_id = ?").run(targetId);
+    db.prepare("DELETE FROM messages WHERE user_id = ?").run(targetId);
+    db.prepare("DELETE FROM users WHERE id = ?").run(targetId);
+  });
+  tx();
+
+  res.json({ ok: true });
+});
+
+// Admin - premium listesi
+app.get("/api/admin/premium-users", (req, res) => {
+  const admin = requireAdmin(res, req.query.adminId);
+  if (!admin) return;
+  const rows = db
+    .prepare(
+      `SELECT id, username, name, email, avatar_url, premium_plan, premium_until
+       FROM users
+       WHERE premium_plan != 'none'
+       ORDER BY premium_until ASC, name ASC`
+    )
+    .all();
+  res.json(rows);
+});
+
+// Admin - mesaj denetimi listesi
+app.get("/api/admin/messages", (req, res) => {
+  const admin = requireAdmin(res, req.query.adminId);
+  if (!admin) return;
+
+  const status = String(req.query.status || "all").toLowerCase();
+  const rows =
+    status === "all"
+      ? db
+          .prepare(
+            `SELECT m.*, u.name AS user_name, u.username, u.avatar_url
+             FROM messages m
+             JOIN users u ON u.id = m.user_id
+             ORDER BY m.created_at DESC`
+          )
+          .all()
+      : db
+          .prepare(
+            `SELECT m.*, u.name AS user_name, u.username, u.avatar_url
+             FROM messages m
+             JOIN users u ON u.id = m.user_id
+             WHERE m.status = ?
+             ORDER BY m.created_at DESC`
+          )
+          .all(status);
+
+  res.json(rows);
+});
+
+// Admin - mesaj onay/gizleme
+app.post("/api/admin/messages/:id/moderate", (req, res) => {
+  const admin = requireAdmin(res, req.body?.adminId);
+  if (!admin) return;
+
+  const messageId = Number(req.params.id);
+  const message = db.prepare("SELECT * FROM messages WHERE id = ?").get(messageId);
+  if (!message) return res.status(404).json({ error: "Mesaj bulunamadı" });
+
+  const action = String(req.body?.action || "").toLowerCase();
+  const mapping = { approve: "approved", hide: "hidden", pending: "pending" };
+  const nextStatus = mapping[action];
+  if (!nextStatus) return res.status(400).json({ error: "Geçersiz işlem" });
+
+  db.prepare(
+    `UPDATE messages
+     SET status = ?, reviewed_at = datetime('now'), reviewed_by = ?
+     WHERE id = ?`
+  ).run(nextStatus, admin.id, messageId);
+
+  const updated = db
+    .prepare(
+      `SELECT m.*, u.name AS user_name, u.username, u.avatar_url
+       FROM messages m
+       JOIN users u ON u.id = m.user_id
+       WHERE m.id = ?`
+    )
+    .get(messageId);
+
+  res.json(updated);
 });
 
 // Şikayetleri listele. Admin tümünü, kullanıcı sadece kendininkini görür.
