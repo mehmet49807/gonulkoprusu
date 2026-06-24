@@ -5,7 +5,7 @@ Bu proje GitHub'a her `main` push'unda **otomatik olarak FTP ile** yüklenir:
 | Site | Build hedefi | FTP klasörü | Adres |
 | --- | --- | --- | --- |
 | Web sitesi | `VITE_APP_TARGET=public` | `/public_html` | https://www.gonulkoprusu.com |
-| Yönetici paneli | `VITE_APP_TARGET=admin` | `/` (panel FTP hesabı kökü) | https://admin.gonulkoprusu.com |
+| Yönetici paneli | `VITE_APP_TARGET=admin` | `/admin.gonulkoprusu.com` | https://admin.gonulkoprusu.com |
 
 Akış: `.github/workflows/deploy.yml` → frontend'i derler (`client/dist`) → `SamKirkland/FTP-Deploy-Action` ile sunucuya yükler.
 
@@ -36,7 +36,7 @@ Ana web sitesi (`/public_html`) için:
 | Adı | Değer |
 | --- | --- |
 | `FTP_PUBLIC_SERVER` | FTP sunucusu (opsiyonel; boşsa `ftp.gonulkoprusu.com`) |
-| `FTP_PUBLIC_USERNAME` | Ana site FTP kullanıcı adı (opsiyonel; boşsa `web@gonulkoprusu.com`) |
+| `FTP_PUBLIC_USERNAME` | Ana site FTP kullanıcı adı (opsiyonel; boşsa `panel@admin.gonulkoprusu.com`) |
 | `FTP_PUBLIC_PASSWORD` | Ana site FTP parolası |
 
 Yönetici paneli (`/admin.gonulkoprusu.com`) için:
@@ -46,15 +46,6 @@ Yönetici paneli (`/admin.gonulkoprusu.com`) için:
 | `FTP_ADMIN_SERVER` | FTP sunucusu (opsiyonel; boşsa `ftp.gonulkoprusu.com`) |
 | `FTP_ADMIN_USERNAME` | Yönetici paneli FTP kullanıcı adı (opsiyonel; boşsa `panel@admin.gonulkoprusu.com`) |
 | `FTP_ADMIN_PASSWORD` | Yönetici paneli FTP parolası |
-
-Hosting tarafındaki tam yollar:
-
-| Site | FTP kullanıcısı | Sunucu klasörü |
-| --- | --- | --- |
-| Web sitesi | `web@gonulkoprusu.com` | `/home/gonulkop/public_html` |
-| Yönetici paneli | `panel@admin.gonulkoprusu.com` | `/home/gonulkop/admin.gonulkoprusu.com` |
-
-Workflow deploy hedefleri sırasıyla `/public_html/` ve `/` kullanır; yönetici panel FTP hesabı zaten `admin.gonulkoprusu.com` klasörüne kilitliyse `server-dir: /` doğru hedeftir.
 
 > Eski kurulumlarla uyumluluk için workflow hâlâ `FTP_SERVER`, `FTP_USERNAME` ve `FTP_PASSWORD` secret'larını fallback olarak okuyabilir. Yeni kurulumda site bazlı secret adlarını kullanın.
 > Ana site ve yönetici paneli aynı FTP kullanıcı adını kullanıyorsa hosting tarafında tek geçerli parola olur. Bu durumda `FTP_PASSWORD` secret'ını tek ortak parola olarak girmeniz yeterlidir.
