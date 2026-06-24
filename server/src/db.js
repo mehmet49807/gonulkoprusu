@@ -51,6 +51,28 @@ db.exec(`
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (reviewed_by) REFERENCES users(id)
   );
+
+  CREATE TABLE IF NOT EXISTS ai_moderation_logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    content_type TEXT NOT NULL,
+    content_id INTEGER,
+    content_text TEXT NOT NULL,
+    violation_type TEXT NOT NULL,
+    violation_detail TEXT,
+    action_taken TEXT NOT NULL DEFAULT 'hidden',
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+  );
+
+  CREATE TABLE IF NOT EXISTS ai_warnings (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    reason TEXT NOT NULL,
+    warning_count INTEGER NOT NULL DEFAULT 1,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+  );
 `);
 
 function ensureUserColumns() {
@@ -68,14 +90,20 @@ function ensureUserColumns() {
   if (!names.has("premium_until")) {
     db.exec("ALTER TABLE users ADD COLUMN premium_until TEXT");
   }
+  if (!names.has("gender")) {
+    db.exec("ALTER TABLE users ADD COLUMN gender TEXT NOT NULL DEFAULT 'unspecified'");
+  }
+  if (!names.has("verified")) {
+    db.exec("ALTER TABLE users ADD COLUMN verified INTEGER NOT NULL DEFAULT 0");
+  }
 }
 
 function seedUsers() {
   const count = db.prepare("SELECT COUNT(*) AS c FROM users").get().c;
   if (count === 0) {
     const insert = db.prepare(
-      `INSERT INTO users (username, name, role, email, avatar_url, premium_plan, premium_until)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`
+      `INSERT INTO users (username, name, role, email, avatar_url, premium_plan, premium_until, gender, verified)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
     );
     insert.run(
       "admin",
@@ -84,7 +112,9 @@ function seedUsers() {
       "mehmet49800@gmail.com",
       "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=admin",
       "none",
-      null
+      null,
+      "male",
+      0
     );
     insert.run(
       "ayse",
@@ -93,7 +123,9 @@ function seedUsers() {
       "ayse@gonulkoprusu.com",
       "https://api.dicebear.com/7.x/avataaars/svg?seed=ayse",
       "pro",
-      "2026-12-31"
+      "2026-12-31",
+      "female",
+      1
     );
     insert.run(
       "mehmet",
@@ -102,7 +134,9 @@ function seedUsers() {
       "mehmet@gonulkoprusu.com",
       "https://api.dicebear.com/7.x/avataaars/svg?seed=mehmet",
       "none",
-      null
+      null,
+      "male",
+      0
     );
   }
 
@@ -120,6 +154,11 @@ function seedUsers() {
          avatar_url = COALESCE(avatar_url, 'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=admin'),
          premium_plan = COALESCE(premium_plan, 'none')
      WHERE role = 'admin'`
+  ).run();
+
+  // Auto-verify female users (mavi tik)
+  db.prepare(
+    "UPDATE users SET verified = 1 WHERE gender = 'female' AND verified = 0"
   ).run();
 }
 
