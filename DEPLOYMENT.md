@@ -36,8 +36,8 @@ Ana web sitesi (`/public_html`) için:
 | Adı | Değer |
 | --- | --- |
 | `FTP_PUBLIC_SERVER` | FTP sunucusu (opsiyonel; boşsa `ftp.gonulkoprusu.com`) |
-| `FTP_PUBLIC_USERNAME` | Ana site FTP kullanıcı adı (opsiyonel; boşsa `panel@admin.gonulkoprusu.com`) |
-| `FTP_PUBLIC_PASSWORD` | Ana site FTP parolası |
+| `FTP_PUBLIC_USERNAME` | Ana site FTP kullanıcı adı (opsiyonel; boşsa `web@gonulkoprusu.com`) |
+| `FTP_PUBLIC_PASSWORD` | Ana site FTP parolası (`web@gonulkoprusu.com` hesabının parolası) |
 
 Yönetici paneli (`/admin.gonulkoprusu.com`) için:
 
@@ -45,10 +45,10 @@ Yönetici paneli (`/admin.gonulkoprusu.com`) için:
 | --- | --- |
 | `FTP_ADMIN_SERVER` | FTP sunucusu (opsiyonel; boşsa `ftp.gonulkoprusu.com`) |
 | `FTP_ADMIN_USERNAME` | Yönetici paneli FTP kullanıcı adı (opsiyonel; boşsa `panel@admin.gonulkoprusu.com`) |
-| `FTP_ADMIN_PASSWORD` | Yönetici paneli FTP parolası |
+| `FTP_ADMIN_PASSWORD` | Yönetici paneli FTP parolası (`panel@admin.gonulkoprusu.com` hesabının parolası) |
 
 > Eski kurulumlarla uyumluluk için workflow hâlâ `FTP_SERVER`, `FTP_USERNAME` ve `FTP_PASSWORD` secret'larını fallback olarak okuyabilir. Yeni kurulumda site bazlı secret adlarını kullanın.
-> Ana site ve yönetici paneli aynı FTP kullanıcı adını kullanıyorsa hosting tarafında tek geçerli parola olur. Bu durumda `FTP_PASSWORD` secret'ını tek ortak parola olarak girmeniz yeterlidir.
+> Ana site (`web@gonulkoprusu.com`) ve yönetici paneli (`panel@admin.gonulkoprusu.com`) **ayrı FTP hesapları ve ayrı parolalar** kullanır. Bu yüzden her iki parolayı da ilgili secret'a (`FTP_PUBLIC_PASSWORD` ve `FTP_ADMIN_PASSWORD`) ayrı ayrı girin. Her job yalnızca kendi parolasını, o yoksa ortak `FTP_PASSWORD`'u kullanır; artık iki sitenin parolaları birbirine karışmaz.
 
 ### Variables (opsiyonel)
 
