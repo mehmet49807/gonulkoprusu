@@ -4,7 +4,7 @@ Bu proje GitHub'a her `main` push'unda **otomatik olarak FTP ile** yüklenir:
 
 | Site | Build hedefi | FTP klasörü | Adres |
 | --- | --- | --- | --- |
-| Web sitesi | `VITE_APP_TARGET=public` | FTP hesabının web kökü (`/`) | https://www.gonulkoprusu.com |
+| Web sitesi | `VITE_APP_TARGET=public` | `/public_html` | https://www.gonulkoprusu.com |
 | Yönetici paneli | `VITE_APP_TARGET=admin` | `/admin.gonulkoprusu.com` | https://admin.gonulkoprusu.com |
 
 Akış: `.github/workflows/deploy.yml` → frontend'i derler (`client/dist`) → `SamKirkland/FTP-Deploy-Action` ile sunucuya yükler.
@@ -31,7 +31,7 @@ GitHub repo → **Settings → Secrets and variables → Actions**.
 
 ### Secrets (zorunlu)
 
-Ana web sitesi (FTP hesabının web kökü) için:
+Ana web sitesi (`/public_html`) için:
 
 | Adı | Değer |
 | --- | --- |
