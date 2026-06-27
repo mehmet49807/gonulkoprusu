@@ -1,7 +1,6 @@
-name: Deploy (FTP)
+name: Deploy website (FTP)
 
-# gonulkoprusu.com (web sitesi) ve admin.gonulkoprusu.com (yönetici paneli)
-# her main push'unda otomatik olarak FTP ile yüklenir.
+# gonulkoprusu.com web sitesi her main push'unda FTP ile /public_html'e yüklenir.
 # Kimlik bilgileri GitHub Secrets'tan okunur (repoda PAROLA SAKLANMAZ).
 
 on:
@@ -39,53 +38,7 @@ jobs:
         with:
           server: ${{ secrets.FTP_PUBLIC_SERVER || secrets.FTP_SERVER || 'ftp.gonulkoprusu.com' }}
           username: ${{ secrets.FTP_PUBLIC_USERNAME || secrets.FTP_USERNAME || 'panel@admin.gonulkoprusu.com' }}
-          password: ${{ secrets.FTP_PASSWORD || secrets.FTP_ADMIN_PASSWORD || secrets.FTP_PUBLIC_PASSWORD }}
+          password: ${{ secrets.FTP_PUBLIC_PASSWORD || secrets.FTP_PASSWORD }}
           protocol: ftp
           local-dir: ./client/dist/
           server-dir: /public_html/
-
-  deploy-admin:
-    name: Yönetici paneli -> FTP kök (/)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-
-      - name: Install
-        run: npm ci
-
-      - name: Build (admin)
-        run: npm run build --workspace client
-        env:
-          VITE_APP_TARGET: admin
-          VITE_API_BASE: ${{ vars.VITE_API_BASE }}
-
-      - name: Prefer React admin entry
-        run: |
-          cp client/dist/index.html client/dist/index.php
-          cat > client/dist/.htaccess <<'EOF'
-          DirectoryIndex index.html index.php
-
-          <IfModule mod_rewrite.c>
-          RewriteEngine On
-          RewriteBase /
-          RewriteRule ^index\.html$ - [L]
-          RewriteCond %{REQUEST_FILENAME} !-f
-          RewriteCond %{REQUEST_FILENAME} !-d
-          RewriteRule . /index.html [L]
-          </IfModule>
-          EOF
-
-      - name: FTP deploy
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_ADMIN_SERVER || secrets.FTP_SERVER || 'ftp.gonulkoprusu.com' }}
-          username: ${{ secrets.FTP_ADMIN_USERNAME || secrets.FTP_USERNAME || 'panel@admin.gonulkoprusu.com' }}
-          password: ${{ secrets.FTP_PASSWORD || secrets.FTP_ADMIN_PASSWORD || secrets.FTP_PUBLIC_PASSWORD }}
-          protocol: ftp
-          local-dir: ./client/dist/
-          server-dir: /

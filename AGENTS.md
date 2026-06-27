@@ -19,8 +19,8 @@ sonuçlandırır ve sonuç **kullanıcıya bildirim (notification) olarak** ilet
 ## Deployment
 
 - Auto-deploy via GitHub Actions FTP on every `main` push — see `.github/workflows/deploy.yml` and `DEPLOYMENT.md`.
-- Frontend builds two targets via `VITE_APP_TARGET` (`public` → `/public_html`, `admin` → `/admin.gonulkoprusu.com`). API base is configurable with `VITE_API_BASE`.
-- FTP credentials live only in GitHub Secrets, never in the repo. Use site-specific secrets for deploys: `FTP_PUBLIC_SERVER`, `FTP_PUBLIC_USERNAME`, `FTP_PUBLIC_PASSWORD`, `FTP_ADMIN_SERVER`, `FTP_ADMIN_USERNAME`, `FTP_ADMIN_PASSWORD`.
+- Frontend auto-deploy builds only the public target via `VITE_APP_TARGET=public` → `/public_html`. API base is configurable with `VITE_API_BASE`.
+- FTP credentials live only in GitHub Secrets, never in the repo. Use public-site secrets for deploys: `FTP_PUBLIC_SERVER`, `FTP_PUBLIC_USERNAME`, `FTP_PUBLIC_PASSWORD`.
 - The Node/Express+SQLite backend cannot run on plain shared FTP hosting; only the static frontend is FTP-deployed. See `DEPLOYMENT.md` for backend hosting options.
 
 ## Cursor Cloud specific instructions

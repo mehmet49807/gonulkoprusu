@@ -1,19 +1,16 @@
 # Yükleme (Deployment) Rehberi — Gönül Köprüsü
 
-Bu proje GitHub'a her `main` push'unda **otomatik olarak FTP ile** yüklenir:
+Bu proje GitHub'a her `main` push'unda **otomatik olarak FTP ile** yalnızca ana web sitesini yükler:
 
 | Site | Build hedefi | FTP klasörü | Adres |
 | --- | --- | --- | --- |
 | Web sitesi | `VITE_APP_TARGET=public` | `/public_html` | https://www.gonulkoprusu.com |
-| Yönetici paneli | `VITE_APP_TARGET=admin` | `/admin.gonulkoprusu.com` | https://admin.gonulkoprusu.com |
 
 Akış: `.github/workflows/deploy.yml` → frontend'i derler (`client/dist`) → `SamKirkland/FTP-Deploy-Action` ile sunucuya yükler.
 
 Hosting FTP sunucusu FTPS/TLS komutunu desteklemediği için workflow `protocol: ftp` kullanır.
-Yönetici paneli deploy'unda `.htaccess` oluşturulur; böylece hosting klasöründe eski `index.php` kalsa bile admin subdomain önce React `index.html` dosyasını açar.
-Hosting `index.php` dosyasını zorunlu olarak çalıştırırsa diye admin build ayrıca React girişini `index.php` olarak da yükler.
-Eğer canlı `admin.gonulkoprusu.com` hâlâ eski PHP giriş ekranını gösterirse cPanel/Plesk'te subdomain document root ayarı `admin.gonulkoprusu.com/` klasörünü göstermiyor demektir. Document root'u bu klasöre bağlayın.
-FTP'ye yüklenen test dosyaları canlı URL'de 404 dönüyorsa verilen FTP hesabı canlı yayın köküne bağlı değildir. Bu durumda hosting panelinden doğru FTP hesabını/yayın klasörünü seçin veya subdomain document root'u FTP'de deploy edilen klasöre yönlendirin.
+Yönetici paneli bu workflow tarafından yüklenmez; otomatik yükleme yalnızca `/public_html` klasörüne yapılır.
+FTP'ye yüklenen test dosyaları canlı URL'de 404 dönüyorsa verilen FTP hesabı canlı yayın köküne bağlı değildir. Bu durumda hosting panelinden doğru FTP hesabını veya `/public_html` yayın klasörünü seçin.
 
 ---
 
@@ -21,7 +18,7 @@ FTP'ye yüklenen test dosyaları canlı URL'de 404 dönüyorsa verilen FTP hesab
 
 - **FTP parolaları sohbet içinde açık metin olarak paylaşıldı. Lütfen hosting panelinden (cPanel/Plesk) bu FTP parolalarını HEMEN değiştirin.**
 - Parola **asla repoya yazılmaz**; yalnızca GitHub Secrets içinde saklanır.
-- Ana site ve yönetici paneli ayrı FTP bilgileriyle çalışacak şekilde ayarlanmıştır. Sunucu veya kullanıcı adı aynı olsa bile parolaları ayrı secret olarak saklayın.
+- Parola değiştirildikten sonra ana web sitesi FTP bilgisini GitHub Secrets'a tekrar girin.
 
 ---
 
@@ -39,16 +36,7 @@ Ana web sitesi (`/public_html`) için:
 | `FTP_PUBLIC_USERNAME` | Ana site FTP kullanıcı adı (opsiyonel; boşsa `panel@admin.gonulkoprusu.com`) |
 | `FTP_PUBLIC_PASSWORD` | Ana site FTP parolası |
 
-Yönetici paneli (`/admin.gonulkoprusu.com`) için:
-
-| Adı | Değer |
-| --- | --- |
-| `FTP_ADMIN_SERVER` | FTP sunucusu (opsiyonel; boşsa `ftp.gonulkoprusu.com`) |
-| `FTP_ADMIN_USERNAME` | Yönetici paneli FTP kullanıcı adı (opsiyonel; boşsa `panel@admin.gonulkoprusu.com`) |
-| `FTP_ADMIN_PASSWORD` | Yönetici paneli FTP parolası |
-
-> Eski kurulumlarla uyumluluk için workflow hâlâ `FTP_SERVER`, `FTP_USERNAME` ve `FTP_PASSWORD` secret'larını fallback olarak okuyabilir. Yeni kurulumda site bazlı secret adlarını kullanın.
-> Ana site ve yönetici paneli aynı FTP kullanıcı adını kullanıyorsa hosting tarafında tek geçerli parola olur. Bu durumda `FTP_PASSWORD` secret'ını tek ortak parola olarak girmeniz yeterlidir.
+> Eski kurulumlarla uyumluluk için workflow hâlâ `FTP_SERVER`, `FTP_USERNAME` ve `FTP_PASSWORD` secret'larını fallback olarak okuyabilir. Yeni kurulumda ana site için `FTP_PUBLIC_*` secret adlarını kullanın.
 
 ### Variables (opsiyonel)
 
@@ -56,13 +44,13 @@ Yönetici paneli (`/admin.gonulkoprusu.com`) için:
 | --- | --- |
 | `VITE_API_BASE` | Backend API adresi (örn. `https://api.gonulkoprusu.com`). Boş bırakılırsa frontend kendi alan adındaki `/api`'yi çağırır. |
 
-Secrets eklendikten sonra: **Actions** sekmesi → **Deploy (FTP)** → **Run workflow** ile elle de tetikleyebilirsiniz; ya da `main`'e push yapın.
+Secrets eklendikten sonra: **Actions** sekmesi → **Deploy website (FTP)** → **Run workflow** ile elle de tetikleyebilirsiniz; ya da `main`'e push yapın.
 
 ---
 
 ## 3) Backend ile ilgili kritik nokta
 
-Frontend (web sitesi + yönetici paneli) statik dosyalardır; paylaşımlı FTP hostinge sorunsuz yüklenir ve çalışır.
+Frontend statik dosyaları paylaşımlı FTP hostinge yüklenir ve çalışır.
 
 Ancak bu projenin **backend'i Node.js + Express + SQLite** ile yazılıdır. Tipik paylaşımlı FTP hosting (Pure-FTPd/cPanel) yalnızca statik dosya ve genelde PHP çalıştırır; **Node.js uygulamasını sadece FTP'ye dosya atarak çalıştıramazsınız.** Giriş/şikayet/bildirim işlemleri bir API gerektirdiğinden, canlı sitenin tam çalışması için backend'in bir yerde çalışması gerekir. Seçenekler:
 
@@ -70,7 +58,7 @@ Ancak bu projenin **backend'i Node.js + Express + SQLite** ile yazılıdır. Tip
 2. **cPanel "Setup Node.js App"** özelliği hostinginizde varsa, backend orada çalıştırılabilir (SQLite yerine kalıcı disk/MySQL gerekebilir).
 3. **Backend'i PHP + MySQL'e dönüştürün.** Paylaşımlı hosting neredeyse her zaman PHP + MySQL destekler; bu durumda her şey tek hostingde çalışır. (Bunu yapmamı isterseniz MySQL veritabanı bilgileri gerekir.)
 
-Şu anki pipeline frontend'i otomatik yükler; backend için yukarıdaki seçeneklerden birini belirlemeniz gerekir.
+Şu anki pipeline yalnızca ana web sitesi frontend'ini otomatik yükler; backend için yukarıdaki seçeneklerden birini belirlemeniz gerekir.
 
 ---
 
@@ -79,5 +67,4 @@ Ancak bu projenin **backend'i Node.js + Express + SQLite** ile yazılıdır. Tip
 ```bash
 npm ci
 VITE_APP_TARGET=public npm run build --workspace client   # client/dist -> /public_html
-VITE_APP_TARGET=admin  npm run build --workspace client   # client/dist -> /admin.gonulkoprusu.com
 ```
