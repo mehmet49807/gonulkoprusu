@@ -24,6 +24,8 @@ const MESSAGE_STATUS_LABELS = {
   hidden: "Gizlendi",
 };
 
+const GITHUB_REPOSITORY_URL = "https://github.com/mehmet49807/gonulkoprusu";
+
 function formatDate(value) {
   if (!value) return "-";
   const date = new Date(value);
@@ -622,6 +624,16 @@ function AdminDashboard({ user }) {
           </span>
           <span>Şikayetler</span>
         </button>
+        <button
+          type="button"
+          className={activeMenu === "github" ? "active" : ""}
+          onClick={() => setActiveMenu("github")}
+        >
+          <span className="menu-icon" aria-hidden="true">
+            GH
+          </span>
+          <span>GitHub</span>
+        </button>
       </section>
 
       {activeMenu === "users" ? (
@@ -630,6 +642,30 @@ function AdminDashboard({ user }) {
         <AdminPremiumTracking adminUser={user} />
       ) : activeMenu === "messages" ? (
         <AdminMessageModeration adminUser={user} />
+      ) : activeMenu === "github" ? (
+        <section className="card admin-page github-panel">
+          <div className="section-heading">
+            <div>
+              <h2>GitHub Bağlantısı</h2>
+              <p className="muted">
+                Proje kodlarını, deploy ayarlarını ve README dosyasını GitHub
+                reposunda takip edin.
+              </p>
+            </div>
+          </div>
+          <a
+            className="github-link-card"
+            href={GITHUB_REPOSITORY_URL}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span>
+              <strong>Gönül Köprüsü GitHub Reposu</strong>
+              <small>{GITHUB_REPOSITORY_URL}</small>
+            </span>
+            <span aria-hidden="true">↗</span>
+          </a>
+        </section>
       ) : (
         <section className="card">
           <h2>Yönetici Paneli — Tüm Şikayetler</h2>
