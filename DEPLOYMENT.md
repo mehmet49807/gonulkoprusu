@@ -10,8 +10,8 @@ Bu proje GitHub'a her `main` push'unda **otomatik olarak FTP ile** yüklenir:
 Akış: `.github/workflows/deploy.yml` → frontend'i derler (`client/dist`) → `SamKirkland/FTP-Deploy-Action` ile sunucuya yükler.
 
 Hosting FTP sunucusu FTPS/TLS komutunu desteklemediği için workflow `protocol: ftp` kullanır.
-Yönetici paneli deploy'unda `.htaccess` oluşturulur; böylece hosting klasöründe eski `index.php` kalsa bile admin subdomain önce React `index.html` dosyasını açar.
-Hosting `index.php` dosyasını zorunlu olarak çalıştırırsa diye admin build ayrıca React girişini `index.php` olarak da yükler.
+Web sitesi ve yönetici paneli deploy'unda `.htaccess` React `index.html` dosyasını öne alır; böylece hosting klasöründe eski `index.php` kalsa bile React uygulaması açılır.
+Hosting `index.php` dosyasını zorunlu olarak çalıştırırsa diye her iki build de React girişini `index.php` olarak da yükler.
 Eğer canlı `admin.gonulkoprusu.com` hâlâ eski PHP giriş ekranını gösterirse cPanel/Plesk'te subdomain document root ayarı `admin.gonulkoprusu.com/` klasörünü göstermiyor demektir. Document root'u bu klasöre bağlayın.
 FTP'ye yüklenen test dosyaları canlı URL'de 404 dönüyorsa verilen FTP hesabı canlı yayın köküne bağlı değildir. Bu durumda hosting panelinden doğru FTP hesabını/yayın klasörünü seçin veya subdomain document root'u FTP'de deploy edilen klasöre yönlendirin.
 
