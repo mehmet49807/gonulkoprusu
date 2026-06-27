@@ -1,6 +1,4 @@
 # Gönül Köprüsü SPA - Apache yapılandırması (paylaşımlı hosting)
-DirectoryIndex index.html index.php
-
 <IfModule mod_rewrite.c>
   RewriteEngine On
   # Var olan dosya/dizinleri olduğu gibi sun
