@@ -77,6 +77,18 @@ Giriş demo amaçlıdır ve parola istemez.
 
 Frontend bildirimleri belirli aralıklarla yeniler, bu yüzden sonuçlar sayfa yenilemeden görünebilir.
 
+## Yönetici paneli
+
+Yönetici paneli kodu GitHub reposunda `client/` uygulamasının içinde yer alır. Uygulama `VITE_APP_TARGET=admin` ile çalıştırıldığında yalnızca yönetici ekranı açılır.
+
+Yerel yönetici paneli build'i almak için:
+
+```bash
+VITE_APP_TARGET=admin npm run build --workspace client
+```
+
+Not: GitHub Actions deploy akışı yönetici panelini FTP'ye yüklemez. Otomatik deploy yalnızca ana web sitesini `/public_html/` klasörüne gönderir.
+
 ## Komutlar
 
 | Komut | Açıklama |
